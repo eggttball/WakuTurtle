@@ -1,13 +1,15 @@
 require "WakuTurtle"
 
-Length = 3
-Weight = 10
-Height = 3
+Length = 2
+Weight = 3
+Height = 2
 
-local builder = WakuTurtle:new("Ant", turtle, Length, Weight, Height, 1, 0, -4)
+local builder = WakuTurtle:new("Ant", turtle, Length, Weight, Height)
 builder:log()
 
--- 移動到最右邊作為初始位置
+-- 初始位置必須是在儲物箱正上方
+-- 接著往前一格，再移動到最右邊開始作業
+builder:move(DIR.FWD)
 builder:moveToRightMost(Weight)
 
 local len = 0

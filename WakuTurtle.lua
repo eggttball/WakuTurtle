@@ -58,7 +58,7 @@ function WakuTurtle:log()
     print("Current X:", self.pos.x, " Y:", self.pos.y, " Z:", self.pos.z, "Face:", self.facing)
 end
 
-function WakuTurtle:new(name, turtle, length, weight, height, chestX, chestY, chestZ)
+function WakuTurtle:new(name, turtle, length, weight, height)
     local obj = {}
     setmetatable(obj, self)
     self.__index = self
@@ -68,16 +68,12 @@ function WakuTurtle:new(name, turtle, length, weight, height, chestX, chestY, ch
     obj.length = (length and length >= 1 and length) or 1
     obj.weight = (weight and weight >= 1 and weight) or 1
     obj.height = (height and height >= 1 and height) or 1
-    obj.chestPos.x = chestX
-    obj.chestPos.y = chestY
-    obj.chestPos.z = chestZ
 
     -- Show initial status
     obj.createTime = os.date(self._time_format)
     print("Start time: " .. obj.createTime)
     print("Name:", obj.name)
     print("Digging (L x W x H):", obj.length, "x", obj.weight, "x", obj.height)
-    print("Storage X:", obj.chestPos.x, " Y:", obj.chestPos.y, " Z:", obj.chestPos.z)
     return obj
 end
 
@@ -271,7 +267,7 @@ end
 -- 回到儲物箱位置的上方
 function WakuTurtle:backToChest()
     self:saveCurrentPos()
-    self:goToPos(self.chestPos.x, self.chestPos.y, self.chestPos.z)
+    self:goToPos(self._start_x, self._start_y, self._start_z)
     self:dropAllItems()
 end
 
