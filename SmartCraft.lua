@@ -1,8 +1,8 @@
 require "WakuTurtle"
 
-Length = 2
-Weight = 3
-Height = 2
+Length = tonumber(arg[1])
+Weight = tonumber(arg[2])
+Height = tonumber(arg[3])
 
 local builder = WakuTurtle:new("Ant", turtle, Length, Weight, Height)
 builder:log()
