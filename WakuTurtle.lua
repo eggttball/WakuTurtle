@@ -232,27 +232,25 @@ end
 
 -- 移動到座標 x, y, z
 function WakuTurtle:goToPos(x, y, z)
-    while self.pos.y > y do
-        self:move(DIR.DWN)
-    end
-    while self.pos.y < y do
-        self:move(DIR.UP)
-    end
-
     if self.pos.x > x then
         self:turnLeft()
         while self.pos.x > x do
             self:move(DIR.FWD)
         end
         self:turnRight()
-    end
-
-    if self.pos.x < x then
+    elseif self.pos.x < x then
         self:turnRight()
         while self.pos.x < x do
             self:move(DIR.FWD)
         end
         self:turnLeft()
+    end
+
+    while self.pos.y > y do
+        self:move(DIR.DWN)
+    end
+    while self.pos.y < y do
+        self:move(DIR.UP)
     end
 
     while self.pos.z > z do
