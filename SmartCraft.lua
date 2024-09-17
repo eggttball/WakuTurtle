@@ -10,7 +10,7 @@ builder:log()
 
 -- 初始位置必須是在儲物箱正上方
 -- 接著往前一格，再移動到最右邊開始作業
-builder:move(DIR.FWD)
+builder:dig()
 builder:moveToRightMost(math.floor(builder:getWeight() / 2), true)
 
 -- 若水平線位置為負數，則從下方開始挖
