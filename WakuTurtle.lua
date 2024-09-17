@@ -185,7 +185,7 @@ end
 -- move == false 時只是挖掘而不移動
 function WakuTurtle:dig(dir, move)
     dir = dir or DIR.FWD
-    move = move or true
+    if move == nil then move = true end
 
     local result = false
     local exist = false
