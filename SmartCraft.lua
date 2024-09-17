@@ -1,10 +1,10 @@
 require "WakuTurtle"
 
-Length = tonumber(arg[1])
-Weight = tonumber(arg[2])
-Height = tonumber(arg[3])
+local length = tonumber(arg[1])
+local weight = tonumber(arg[2])
+local height = tonumber(arg[3])
 
-local builder = WakuTurtle:new("Ant", turtle, Length, Weight, Height)
+local builder = WakuTurtle:new("Ant", turtle, length, weight, height)
 builder:log()
 
 -- 初始位置必須是在儲物箱正上方
