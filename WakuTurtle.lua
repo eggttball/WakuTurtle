@@ -128,12 +128,8 @@ function WakuTurtle:move(dir)
 end
 
 
--- 朝著 dir 方向挖掘，並移動一格
--- move == false 時只是挖掘而不移動
-function WakuTurtle:dig(dir, move)
-    dir = dir or DIR.FWD
-    move = move or true
-
+-- 檢查方塊是否允許挖掘
+function WakuTurtle:allowedToDig(blockName)
     local checkList = function (value, list)
         for _, v in ipairs(list) do
             if v == value then
@@ -143,18 +139,28 @@ function WakuTurtle:dig(dir, move)
         return false
     end
 
+    return checkList(blockName, self._blocks_to_dig)
+end
+
+
+-- 朝著 dir 方向挖掘，並移動一格
+-- move == false 時只是挖掘而不移動
+function WakuTurtle:dig(dir, move)
+    dir = dir or DIR.FWD
+    move = move or true
+
     local result = false
     local exist = false
     local block = nil
     if dir == DIR.FWD then
         exist, block = self.turtle.inspect()
-        if exist and checkList(block.name, self._blocks_to_dig) then result = self.turtle.dig() end
+        if exist and self:allowedToDig(block.name) then result = self.turtle.dig() end
     elseif dir == DIR.UP then
         exist, block = self.turtle.inspectUp()
-        if exist and checkList(block.name, self._blocks_to_dig) then result = self.turtle.digUp() end
+        if exist and self:allowedToDig(block.name) then result = self.turtle.digUp() end
     elseif dir == DIR.DWN then
         exist, block = self.turtle.inspectDown()
-        if exist and checkList(block.name, self._blocks_to_dig) then result = self.turtle.digDown() end
+        if exist and self:allowedToDig(block.name) then result = self.turtle.digDown() end
     end
 
     if move and (not exist or result) then self:move(dir) end
