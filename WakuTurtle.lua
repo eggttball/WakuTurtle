@@ -227,7 +227,7 @@ end
 function WakuTurtle:moveToRightMost(distance, forceDig)
     self:turnRight()
     local moving = true
-    local pos = 1
+    local pos = 0
     local dig = forceDig or false
     while moving and pos < distance do
         local inspect = self.turtle.inspect()
@@ -243,7 +243,7 @@ end
 
 -- 朝著 dir 方向挖掘一段距離
 function WakuTurtle:digAuto(dir, distance)
-    local pos = 1
+    local pos = 0
     local moving = true
     while moving and pos < distance do
         local digging, block = self:dig(dir)
