@@ -333,13 +333,16 @@ function WakuTurtle:dropAllItems()
     local loc = 1
     while loc <= 16 and self.turtle.select(loc) do
         if self.turtle.getItemCount(loc) > 0 then
+            local items = self.turtle.getItemDetail()
+            if items.name == "minecraft:torch" then goto continue end
+
             ok = self.turtle.dropDown()
             if not ok then
-                local items = self.turtle.getItemDetail()
                 print("Chest is no space or full of " .. items.name)
             end
         end
         loc = loc + 1
+        ::continue::
     end
 end
 
