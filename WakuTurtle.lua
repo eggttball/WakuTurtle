@@ -153,6 +153,17 @@ function WakuTurtle:allowedToDig(blockName)
 end
 
 
+function WakuTurtle:keepDigging()
+    local result, exist, block = false, false, nil
+    result = self.turtle.dig()
+    exist, block = self.turtle.inspect()
+    while exist and self:isFallingBlock(block.name) do
+        result = self.turtle.dig()
+        exist, block = self.turtle.inspect()
+    end
+    return result
+end
+
 -- 朝著 dir 方向挖掘，並移動一格
 -- move == false 時只是挖掘而不移動
 function WakuTurtle:dig(dir, move)
@@ -163,19 +174,9 @@ function WakuTurtle:dig(dir, move)
     local exist = false
     local block = nil
 
-    local keepDigging = function ()
-        result = self.turtle.dig()
-        exist, block = self.turtle.inspect()
-        while exist and self:isFallingBlock(block.name) do
-            result = self.turtle.dig()
-            exist, block = self.turtle.inspect()
-        end
-        return result
-    end
-
     if dir == DIR.FWD then
         exist, block = self.turtle.inspect()
-        if exist and self:allowedToDig(block.name) then result = keepDigging() end
+        if exist and self:allowedToDig(block.name) then result = self:keepDigging() end
     elseif dir == DIR.UP then
         exist, block = self.turtle.inspectUp()
         if exist and self:allowedToDig(block.name) then result = self.turtle.digUp() end
