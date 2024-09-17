@@ -42,4 +42,4 @@ end
 -- 紀錄工作結束後最後位置
 builder:log()
 builder:backToChest()
-builder:backToWork()
+--builder:backToWork()
