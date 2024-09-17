@@ -27,6 +27,7 @@ WakuTurtle = {
         "minecraft:gravel",
         "minecraft:sand"
     },
+    _loc_torch = 0, -- 火把在儲存箱內的位置，1 ~ 16
     chestPos = {    -- Chest Box Position
         x = 0,
         y = 0,
@@ -63,6 +64,20 @@ function WakuTurtle:log()
     print("Current X:", self.pos.x, " Y:", self.pos.y, " Z:", self.pos.z, "Face:", self.facing)
 end
 
+function WakuTurtle:findTorch()
+    local loc = 1
+    while loc <= 16 and self.turtle.select(loc) do
+        if self.turtle.getItemCount(loc) > 0 then
+            local items = self.turtle.getItemDetail()
+            if items.name == "minecraft:torch" then
+                self._loc_torch = loc
+                break
+            end
+        end
+        loc = loc + 1
+    end
+end
+
 function WakuTurtle:new(name, turtle, length, weight, height)
     local obj = {}
     setmetatable(obj, self)
@@ -79,6 +94,8 @@ function WakuTurtle:new(name, turtle, length, weight, height)
     print("Start time: " .. obj.createTime)
     print("Name:", obj.name)
     print("Digging (L x W x H):", obj.length, "x", obj.weight, "x", obj.height)
+
+    obj:findTorch()
     return obj
 end
 
@@ -168,7 +185,7 @@ end
 -- move == false 時只是挖掘而不移動
 function WakuTurtle:dig(dir, move)
     dir = dir or DIR.FWD
-    move = move or true
+    if move == nil then move = true end
 
     local result = false
     local exist = false
@@ -324,4 +341,15 @@ function WakuTurtle:dropAllItems()
         end
         loc = loc + 1
     end
+end
+
+
+function WakuTurtle:placeTorch()
+    if self._loc_torch == 0 then
+        print("No torch found")
+        return
+    end
+
+    self.turtle.select(self._loc_torch)
+    self.turtle.placeUp()
 end

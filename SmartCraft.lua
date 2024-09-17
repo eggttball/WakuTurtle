@@ -21,6 +21,12 @@ end
 local len = 0
 local direction = DIR.UP
 while len < builder:getLength() do
+
+    if len % 4 == 1 and direction == DIR.DWN then
+        builder:dig(DIR.UP, false)
+        builder:placeTorch()
+    end
+
     -- 往上挖掘一排高的方塊
     local wgt = 1
     builder:digAuto(direction, builder:getHeight() - 1)
@@ -40,6 +46,12 @@ while len < builder:getLength() do
     len = len + 1
     if len < builder:getLength() then
         builder:dig()
+
+        if len % 4 == 1 and direction == DIR.DWN then
+            builder:dig(DIR.UP, false)
+            builder:placeTorch()
+        end
+
         builder:moveToRightMost(builder:getWeight() - 1, true)
     end
 end
