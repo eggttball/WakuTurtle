@@ -3,6 +3,7 @@ require "WakuTurtle"
 local length = tonumber(arg[1])
 local weight = tonumber(arg[2])
 local height = tonumber(arg[3])
+local horizontal = tonumber(arg[4]) or 0 -- 水平線位置
 
 local builder = WakuTurtle:new("Ant", turtle, length, weight, height)
 builder:log()
@@ -11,6 +12,11 @@ builder:log()
 -- 接著往前一格，再移動到最右邊開始作業
 builder:move(DIR.FWD)
 builder:moveToRightMost(math.ceil(builder:getWeight() / 2), true)
+
+-- 若水平線位置為負數，則從下方開始挖
+if horizontal < 0 then
+    builder:digAuto(DIR.DWN, math.abs(horizontal))
+end
 
 local len = 0
 local direction = DIR.UP
