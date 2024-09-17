@@ -10,7 +10,7 @@ builder:log()
 -- 初始位置必須是在儲物箱正上方
 -- 接著往前一格，再移動到最右邊開始作業
 builder:move(DIR.FWD)
-builder:moveToRightMost(math.floor(builder:getWeight() / 2), true)
+builder:moveToRightMost(math.ceil(builder:getWeight() / 2), true)
 
 local len = 0
 local direction = DIR.UP
