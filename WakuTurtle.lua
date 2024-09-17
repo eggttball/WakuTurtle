@@ -232,7 +232,7 @@ function WakuTurtle:moveToRightMost(distance, forceDig)
     while moving and pos < distance do
         local inspect = self.turtle.inspect()
         if inspect and dig then
-            local digging, block = self.turtle.dig()
+            self:keepDigging()
         end
         moving = self:move(DIR.FWD)
         pos = pos + 1
