@@ -128,17 +128,17 @@ function WakuTurtle:move(dir)
 end
 
 
+local function checkList(value, list)
+    for _, v in ipairs(list) do
+        if v == value then
+            return true
+        end
+    end
+    return false
+end
+
 -- 檢查方塊是否允許挖掘
 function WakuTurtle:allowedToDig(blockName)
-    local checkList = function (value, list)
-        for _, v in ipairs(list) do
-            if v == value then
-                return true
-            end
-        end
-        return false
-    end
-
     return checkList(blockName, self._blocks_to_dig)
 end
 
@@ -152,6 +152,7 @@ function WakuTurtle:dig(dir, move)
     local result = false
     local exist = false
     local block = nil
+
     if dir == DIR.FWD then
         exist, block = self.turtle.inspect()
         if exist and self:allowedToDig(block.name) then result = self.turtle.dig() end
