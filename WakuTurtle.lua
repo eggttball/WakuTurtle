@@ -307,13 +307,19 @@ end
 
 -- 把攜帶的全部物品放入儲物箱
 function WakuTurtle:dropAllItems()
+    local ok, block = self.turtle.inspectDown()
+    if not ok or block.name ~= "minecraft:chest" then
+        print("No chest found")
+        return
+    end
+
     local loc = 1
     while loc <= 16 and self.turtle.select(loc) do
         if self.turtle.getItemCount(loc) > 0 then
-            local ok = self.turtle.dropDown()
+            ok = self.turtle.dropDown()
             if not ok then
                 local items = self.turtle.getItemDetail()
-                print("Chest is full of " .. items.name)
+                print("Chest is no space or full of " .. items.name)
             end
         end
         loc = loc + 1
