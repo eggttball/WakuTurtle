@@ -240,21 +240,34 @@ function WakuTurtle:turnRight()
 end
 
 
--- 固定每次都回到最右邊開始新一輪的挖掘
-function WakuTurtle:moveToRightMost(distance)
-    self:turnRight()
-    self:digAuto(DIR.FWD, distance)
-    self:turnLeft()
-end
-
-
 -- 朝著 dir 方向挖掘一段距離
 function WakuTurtle:digAuto(dir, distance)
     local pos = 0
-    while pos < distance do
-        self:dig(dir)
-        pos = pos + 1
+    if dir == DIR.LFT then
+        -- shift to left
+        self:turnLeft()
+        while pos < distance do
+            self:dig(DIR.FWD)
+            pos = pos + 1
+        end
+        self:turnRight()
+
+    elseif dir == DIR.RGT then
+        -- shift to right
+        self:turnRight()
+        while pos < distance do
+            self:dig(DIR.FWD)
+            pos = pos + 1
+        end
+        self:turnLeft()
+
+    else
+        while pos < distance do
+            self:dig(dir)
+            pos = pos + 1
+        end
     end
+
 end
 
 

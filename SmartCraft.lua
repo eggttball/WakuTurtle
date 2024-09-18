@@ -11,7 +11,7 @@ builder:log()
 -- 初始位置必須是在儲物箱正上方
 -- 接著往前一格，再移動到最右邊開始作業
 builder:dig()
-builder:moveToRightMost(math.floor(builder:getWeight() / 2))
+builder:digAuto(DIR.RGT, math.floor(builder:getWeight() / 2))
 
 -- 若水平線位置為負數，則從下方開始挖
 if horizontal < 0 then
@@ -52,7 +52,7 @@ while len < builder:getLength() do
             builder:placeTorch()
         end
 
-        builder:moveToRightMost(builder:getWeight() - 1)
+        builder:digAuto(DIR.RGT, builder:getWeight() - 1)
     end
 end
 
