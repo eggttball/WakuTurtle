@@ -34,9 +34,7 @@ while len < builder:getLength() do
 
     -- 接下來往下挖掘一排、再往上挖掘一排，持續上下交替直到寬度到達 Weight
     while wgt < builder:getWeight() do
-        builder:turnLeft()
-        builder:dig()
-        builder:turnRight()
+        builder:digAuto(DIR.LFT, 1)
         builder:digAuto(direction, builder:getHeight() - 1)
         direction = direction * -1
         wgt = wgt + 1
