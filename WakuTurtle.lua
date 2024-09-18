@@ -242,6 +242,11 @@ end
 
 -- 朝著 dir 方向挖掘一段距離
 function WakuTurtle:digAuto(dir, distance)
+    if distance < 0 then
+        dir = DIR.getRevDir(dir)
+        distance = math.abs(distance)
+    end
+
     local pos = 0
     if dir == DIR.LFT then
         -- shift to left

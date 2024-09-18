@@ -7,3 +7,17 @@ DIR = {
     RGT = 6
 }
 
+
+local oppositeDir = {
+    [DIR.UP] = DIR.DWN,
+    [DIR.DWN] = DIR.UP,
+    [DIR.FWD] = DIR.BCK,
+    [DIR.BCK] = DIR.FWD,
+    [DIR.LFT] = DIR.RGT,
+    [DIR.RGT] = DIR.LFT
+}
+
+
+DIR.getRevDir = function(dir)
+    return oppositeDir[dir]
+end
