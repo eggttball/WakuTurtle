@@ -334,7 +334,10 @@ function WakuTurtle:dropAllItems()
     while loc <= 16 and self.turtle.select(loc) do
         if self.turtle.getItemCount(loc) > 0 then
             local items = self.turtle.getItemDetail()
-            if items.name == "minecraft:torch" then goto continue end
+            if items.name == "minecraft:torch" then
+                loc = loc + 1
+                goto continue
+            end
 
             ok = self.turtle.dropDown()
             if not ok then
