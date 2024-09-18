@@ -4,6 +4,7 @@ local length = tonumber(arg[1])
 local weight = tonumber(arg[2])
 local height = tonumber(arg[3])
 local horizontal = tonumber(arg[4]) or 0 -- 水平線位置
+local rightShift = tonumber(arg[5]) or 0 -- 右移格數，調整挖掘的起始位置，挖掘很大的空間時，方便同時放出多個小烏龜一起作業，避免互相干擾
 
 local builder = WakuTurtle:new("Ant", turtle, length, weight, height)
 builder:log()
@@ -11,7 +12,7 @@ builder:log()
 -- 初始位置必須是在儲物箱正上方
 -- 接著往前一格，再移動到最右邊開始作業
 builder:dig()
-builder:moveToRightMost(math.floor(builder:getWeight() / 2), true)
+builder:digAuto(DIR.RGT, math.floor(builder:getWeight() / 2) + rightShift)
 
 -- 若水平線位置為負數，則從下方開始挖
 if horizontal < 0 then
@@ -23,7 +24,6 @@ local direction = DIR.UP
 while len < builder:getLength() do
 
     if len % 4 == 1 and direction == DIR.DWN then
-        builder:dig(DIR.UP, false)
         builder:placeTorch()
     end
 
@@ -34,9 +34,7 @@ while len < builder:getLength() do
 
     -- 接下來往下挖掘一排、再往上挖掘一排，持續上下交替直到寬度到達 Weight
     while wgt < builder:getWeight() do
-        builder:turnLeft()
-        builder:dig()
-        builder:turnRight()
+        builder:digAuto(DIR.LFT, 1)
         builder:digAuto(direction, builder:getHeight() - 1)
         direction = direction * -1
         wgt = wgt + 1
@@ -48,11 +46,10 @@ while len < builder:getLength() do
         builder:dig()
 
         if len % 4 == 1 and direction == DIR.DWN then
-            builder:dig(DIR.UP, false)
             builder:placeTorch()
         end
 
-        builder:moveToRightMost(builder:getWeight() - 1, true)
+        builder:digAuto(DIR.RGT, builder:getWeight() - 1)
     end
 end
 

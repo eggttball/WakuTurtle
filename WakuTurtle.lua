@@ -240,32 +240,39 @@ function WakuTurtle:turnRight()
 end
 
 
--- 固定每次都回到最右邊開始新一輪的挖掘
-function WakuTurtle:moveToRightMost(distance, forceDig)
-    self:turnRight()
-    local moving = true
-    local pos = 0
-    local dig = forceDig or false
-    while moving and pos < distance do
-        local inspect = self.turtle.inspect()
-        if inspect and dig then
-            self:keepDigging()
-        end
-        moving = self:move(DIR.FWD)
-        pos = pos + 1
-    end
-    self:turnLeft()
-end
-
-
 -- 朝著 dir 方向挖掘一段距離
 function WakuTurtle:digAuto(dir, distance)
-    local pos = 0
-    local moving = true
-    while moving and pos < distance do
-        local digging, block = self:dig(dir)
-        pos = pos + 1
+    if distance < 0 then
+        dir = DIR.getRevDir(dir)
+        distance = math.abs(distance)
     end
+
+    local pos = 0
+    if dir == DIR.LFT then
+        -- shift to left
+        self:turnLeft()
+        while pos < distance do
+            self:dig(DIR.FWD)
+            pos = pos + 1
+        end
+        self:turnRight()
+
+    elseif dir == DIR.RGT then
+        -- shift to right
+        self:turnRight()
+        while pos < distance do
+            self:dig(DIR.FWD)
+            pos = pos + 1
+        end
+        self:turnLeft()
+
+    else
+        while pos < distance do
+            self:dig(dir)
+            pos = pos + 1
+        end
+    end
+
 end
 
 
@@ -357,5 +364,6 @@ function WakuTurtle:placeTorch()
     end
 
     self.turtle.select(self._loc_torch)
+    self:dig(DIR.UP, false)
     self.turtle.placeUp()
 end
