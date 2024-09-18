@@ -23,7 +23,6 @@ local direction = DIR.UP
 while len < builder:getLength() do
 
     if len % 4 == 1 and direction == DIR.DWN then
-        builder:dig(DIR.UP, false)
         builder:placeTorch()
     end
 
@@ -46,7 +45,6 @@ while len < builder:getLength() do
         builder:dig()
 
         if len % 4 == 1 and direction == DIR.DWN then
-            builder:dig(DIR.UP, false)
             builder:placeTorch()
         end
 

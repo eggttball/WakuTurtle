@@ -359,5 +359,6 @@ function WakuTurtle:placeTorch()
     end
 
     self.turtle.select(self._loc_torch)
+    self:dig(DIR.UP, false)
     self.turtle.placeUp()
 end
