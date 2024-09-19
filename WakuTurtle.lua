@@ -240,6 +240,21 @@ function WakuTurtle:turnRight()
 end
 
 
+function WakuTurtle:faceTo(dir)
+    if dir == self.facing then return end
+
+    local diff = dir - self.facing
+    if diff == 2 or diff == -6 then
+        self:turnRight()
+    elseif diff == -2 or diff == 6 then
+        self:turnLeft()
+    else
+        self:turnLeft()
+        self:turnLeft()
+    end
+end
+
+
 -- 朝著 dir 方向挖掘一段距離
 function WakuTurtle:digAuto(dir, distance, shift)
     if shift == nil then shift = false end
