@@ -3,15 +3,16 @@ require "WakuTurtle"
 local length = tonumber(arg[1])
 local weight = tonumber(arg[2])
 local height = tonumber(arg[3])
-local horizontal = tonumber(arg[4]) or 0 -- 水平線位置
-local rightShift = tonumber(arg[5]) or 0 -- 右移格數，調整挖掘的起始位置，挖掘很大的空間時，方便同時放出多個小烏龜一起作業，避免互相干擾
+local xShift = tonumber(arg[4]) or 0    -- 右移格數，調整挖掘的起始位置。挖掘很大的空間時，方便同時放出多個小烏龜一起作業，避免互相干擾
+local horizontal = tonumber(arg[5]) or 0 -- 水平線位置
+
 
 local builder = WakuTurtle:new("Ant", turtle, length, weight, height)
 builder:log()
 
 -- 初始位置必須是在儲物箱正上方
 -- 再移動到最右邊開始作業
-builder:digAuto(DIR.RGT, math.floor(builder:getWeight() / 2) + rightShift, true)
+builder:digAuto(DIR.RGT, math.floor(builder:getWeight() / 2) + xShift, true)
 
 -- 若水平線位置為負數，則從下方開始挖
 if horizontal < 0 then
