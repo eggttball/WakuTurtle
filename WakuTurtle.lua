@@ -241,7 +241,9 @@ end
 
 
 -- 朝著 dir 方向挖掘一段距離
-function WakuTurtle:digAuto(dir, distance)
+function WakuTurtle:digAuto(dir, distance, shift)
+    if shift == nil then shift = false end
+
     if distance < 0 then
         dir = DIR.getRevDir(dir)
         distance = math.abs(distance)
@@ -249,22 +251,22 @@ function WakuTurtle:digAuto(dir, distance)
 
     local pos = 0
     if dir == DIR.LFT then
-        -- shift to left
         self:turnLeft()
         while pos < distance do
             self:dig(DIR.FWD)
             pos = pos + 1
         end
-        self:turnRight()
+        -- shift to left
+        if shift then self:turnRight() end
 
     elseif dir == DIR.RGT then
-        -- shift to right
         self:turnRight()
         while pos < distance do
             self:dig(DIR.FWD)
             pos = pos + 1
         end
-        self:turnLeft()
+        -- shift to right
+        if shift then self:turnLeft() end
 
     else
         while pos < distance do

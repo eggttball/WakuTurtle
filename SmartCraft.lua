@@ -11,7 +11,7 @@ builder:log()
 
 -- 初始位置必須是在儲物箱正上方
 -- 再移動到最右邊開始作業
-builder:digAuto(DIR.RGT, math.floor(builder:getWeight() / 2) + rightShift)
+builder:digAuto(DIR.RGT, math.floor(builder:getWeight() / 2) + rightShift, true)
 
 -- 若水平線位置為負數，則從下方開始挖
 if horizontal < 0 then
@@ -29,12 +29,12 @@ while hgt < builder:getHeight() do
     while wgt < builder:getWeight() do
         if builder.facing == DIR.FWD then
             builder:digAuto(DIR.LFT, 1)
+            builder:turnLeft()
         elseif builder.facing == DIR.BCK then
             builder:digAuto(DIR.RGT, 1)
+            builder:turnRight()
         end
 
-        builder:turnLeft()
-        builder:turnLeft()
         builder:digAuto(DIR.FWD, builder:getLength() + 1)
         wgt = wgt + 1
     end
@@ -46,12 +46,11 @@ while hgt < builder:getHeight() do
 
         if builder.facing == DIR.FWD then
             builder:digAuto(DIR.RGT, builder:getWeight() - 1)
+            builder:turnRight()
         elseif builder.facing == DIR.BCK then
             builder:digAuto(DIR.LFT, builder:getWeight() - 1)
+            builder:turnLeft()
         end
-
-        builder:turnLeft()
-        builder:turnLeft()
     end
 end
 
