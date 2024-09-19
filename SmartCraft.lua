@@ -14,10 +14,8 @@ builder:log()
 -- 再移動到最右邊開始作業
 builder:digAuto(DIR.RGT, math.floor(builder:getWeight() / 2) + xShift, true)
 
--- 若水平線位置為負數，則從下方開始挖
-if yShift < 0 then
-    builder:digAuto(DIR.DWN, math.abs(yShift))
-end
+-- 根據 yShift 數值，上下調整挖掘的起始位置
+builder:digAuto(DIR.UP, yShift)
 
 local hgt = 0
 while hgt < builder:getHeight() do
