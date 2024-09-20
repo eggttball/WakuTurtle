@@ -20,12 +20,13 @@ builder:digAuto(DIR.UP, yShift)
 local hgt = 0
 while hgt < builder:getHeight() do
 
-    -- 往前挖掘一整排的方塊
-    builder:digAuto(DIR.FWD, builder:getLength() + 1)
-
-    local wgt = 1
+    local wgt = 0
     -- 接下來由右向左持續來回挖掘，直到寬度到達 Weight
     while wgt < builder:getWeight() do
+        -- 往前挖掘一整排的方塊
+        builder:digAuto(DIR.FWD, builder:getLength() + 1)
+        wgt = wgt + 1
+        if wgt == builder:getWeight() then break end
         if builder.facing == DIR.FWD then
             builder:digAuto(DIR.LFT, 1)
             builder:turnLeft()
@@ -33,9 +34,6 @@ while hgt < builder:getHeight() do
             builder:digAuto(DIR.RGT, 1)
             builder:turnRight()
         end
-
-        builder:digAuto(DIR.FWD, builder:getLength() + 1)
-        wgt = wgt + 1
     end
 
     -- 往上挖掘一格後再回到最右邊位置
