@@ -23,6 +23,15 @@ WakuTurtle = {
         "minecraft:wall_torch", -- 牆壁火把
         "minecraft:sand"        -- 沙子
     },
+    _blocks_to_build = {    -- 可以客製化建築的方塊
+        "minecraft:stone",      -- 石頭
+        "minecraft:cobblestone",-- 鵝卵石
+        "minecraft:diorite",    -- 閃長岩
+        "minecraft:andesite",   -- 安山岩
+        "minecraft:granite",    -- 花崗岩
+        "minecraft:dirt",       -- 泥土
+        "minecraft:grass_block",-- 草地
+    },
     _blocks_falling = { -- 會下落的方塊，這類方塊失去支撐後會掉下來，擋到挖掘機器人的路
         "minecraft:gravel",
         "minecraft:sand"
@@ -46,6 +55,13 @@ WakuTurtle = {
     facing = DIR.FWD,
     lastFacing = DIR.FWD,
     direction = DIR.FWD
+}
+
+local reserveBlocks = {
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0}
 }
 
 function WakuTurtle:getLength()
@@ -95,7 +111,9 @@ function WakuTurtle:new(name, turtle, length, weight, height)
     print("Name:", obj.name)
     print("Digging (L x W x H):", obj.length, "x", obj.weight, "x", obj.height)
 
-    obj:findTorch()
+    --obj:findTorch()
+    obj:saveReserveBlocks()
+    obj:printReserveBlocks()
     return obj
 end
 
@@ -167,6 +185,43 @@ end
 -- 檢查方塊是否允許挖掘
 function WakuTurtle:allowedToDig(blockName)
     return checkList(blockName, self._blocks_to_dig)
+end
+
+-- 確認建築藍圖，檢查前面的方塊是否應該保留
+function WakuTurtle:isReserveBlock()
+    if reserveBlocks[4 - self.pos.y][self.pos.x + 2] == 1 then
+        return true
+    else
+        return false
+    end
+end
+
+
+-- 把小烏龜的儲物箱當作藍圖，儲存需要保留方塊的位置
+function WakuTurtle:saveReserveBlocks()
+    local loc = 1
+    while loc <= 16 and self.turtle.select(loc) do
+        if self.turtle.getItemCount(loc) > 0 then
+            local items = self.turtle.getItemDetail()
+            if checkList(items.name, self._blocks_to_build) then
+                local x = (loc - 1) % 4
+                local y = math.floor((16 - loc) / 4)
+                reserveBlocks[4 - y][x + 1] = 1
+            end
+        end
+        loc = loc + 1
+    end
+end
+
+
+-- 把已儲存的藍圖輸出到螢幕上，方便確認
+function WakuTurtle:printReserveBlocks()
+    for i = 1, #reserveBlocks do
+        for j = 1, #reserveBlocks[i] do
+            io.write(reserveBlocks[i][j], "\t")
+        end
+        print()
+    end
 end
 
 
