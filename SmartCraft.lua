@@ -18,6 +18,7 @@ builder:digAuto(DIR.RGT, math.floor(builder:getWeight() / 2) + xShift, true)
 builder:digAuto(DIR.UP, yShift)
 
 local hgt = 0
+local dir = DIR.LFT
 while hgt < builder:getHeight() do
 
     local wgt = 0
@@ -28,26 +29,22 @@ while hgt < builder:getHeight() do
         wgt = wgt + 1
         if wgt == builder:getWeight() then break end
         if builder.facing == DIR.FWD then
-            builder:digAuto(DIR.LFT, 1)
-            builder:turnLeft()
+            builder:faceTo(dir)
+            builder:digAuto(DIR.FWD, 1)
+            builder:faceTo(DIR.getRevDir(DIR.FWD))
         elseif builder.facing == DIR.BCK then
-            builder:digAuto(DIR.RGT, 1)
-            builder:turnRight()
+            builder:faceTo(dir)
+            builder:digAuto(DIR.FWD, 1)
+            builder:faceTo(DIR.getRevDir(DIR.BCK))
         end
     end
 
-    -- 往上挖掘一格後再回到最右邊位置
+    -- 往上挖掘一格後挖回來
     hgt = hgt + 1
     if hgt < builder:getHeight() then
         builder:dig(DIR.UP)
-
-        if builder.facing == DIR.FWD then
-            builder:digAuto(DIR.RGT, builder:getWeight() - 1)
-            builder:turnRight()
-        elseif builder.facing == DIR.BCK then
-            builder:digAuto(DIR.LFT, builder:getWeight() - 1)
-            builder:turnLeft()
-        end
+        dir = DIR.getRevDir(dir)
+        builder:faceTo(DIR.getRevDir(builder.facing))
     end
 end
 
