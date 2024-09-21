@@ -328,6 +328,7 @@ end
 -- 朝著 dir 方向挖掘一段距離
 function WakuTurtle:digAuto(dir, distance, shift)
     if shift == nil then shift = false end
+    if distance == 0 then return end
 
     if distance < 0 then
         dir = DIR.getRevDir(dir)
