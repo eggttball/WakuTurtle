@@ -204,7 +204,7 @@ end
 
 -- 確認建築藍圖，檢查前面的方塊是否應該保留
 function WakuTurtle:isReserveBlock()
-    if reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 + self._shift_x] == 1 then
+    if reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 - self._shift_x] == 1 then
         return true
     else
         return false
