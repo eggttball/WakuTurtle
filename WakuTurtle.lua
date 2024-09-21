@@ -122,6 +122,16 @@ function WakuTurtle:new(name, turtle, length, weight, height, xShift, yShift)
 end
 
 
+-- 移動到挖掘的起始位置
+function WakuTurtle:gotoStartPos()
+    -- 根據 _shift_x 數值，左右調整挖掘的起始位置
+    self:digAuto(DIR.RGT, math.floor(self:getWeight() / 2) + self._shift_x, true)
+
+    -- 根據 _shift_y 數值，上下調整挖掘的起始位置
+    self:digAuto(DIR.UP, self._shift_y)
+end
+
+
 -- 儲存當下的座標與朝向，以便之後可以回來繼續工作
 function WakuTurtle:saveCurrentPos()
     self.lastPos.x = self.pos.x
