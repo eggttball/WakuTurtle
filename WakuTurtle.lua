@@ -118,7 +118,18 @@ function WakuTurtle:new(name, turtle, length, weight, height, xShift, yShift)
     --obj:findTorch()
     obj:saveReserveBlocks()
     obj:printReserveBlocks()
+    obj:log()
     return obj
+end
+
+
+-- 移動到挖掘的起始位置
+function WakuTurtle:gotoStartPos()
+    -- 根據 _shift_x 數值，左右調整挖掘的起始位置
+    self:digAuto(DIR.RGT, self._shift_x, true)
+
+    -- 根據 _shift_y 數值，上下調整挖掘的起始位置
+    self:digAuto(DIR.UP, self._shift_y)
 end
 
 
@@ -193,7 +204,7 @@ end
 
 -- 確認建築藍圖，檢查前面的方塊是否應該保留
 function WakuTurtle:isReserveBlock()
-    if reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 2 + self._shift_x] == 1 then
+    if reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 + self._shift_x] == 1 then
         return true
     else
         return false
@@ -317,6 +328,7 @@ end
 -- 朝著 dir 方向挖掘一段距離
 function WakuTurtle:digAuto(dir, distance, shift)
     if shift == nil then shift = false end
+    if distance == 0 then return end
 
     if distance < 0 then
         dir = DIR.getRevDir(dir)

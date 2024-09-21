@@ -8,17 +8,11 @@ local yShift = tonumber(arg[5]) or 0    -- 垂直移動格數，調整挖掘的�
 
 
 local builder = WakuTurtle:new("Ant", turtle, length, weight, height, xShift, yShift)
-builder:log()
-
--- 初始位置必須是在儲物箱正上方
--- 再移動到最右邊開始作業
-builder:digAuto(DIR.RGT, math.floor(builder:getWeight() / 2) + xShift, true)
-
--- 根據 yShift 數值，上下調整挖掘的起始位置
-builder:digAuto(DIR.UP, yShift)
+-- 移動到初始位置再開始作業
+builder:gotoStartPos()
 
 local hgt = 0
-local dir = DIR.LFT -- 挖掘的主要方向，先由右向左，整個平面完成後再從左向右，持續反覆
+local dir = DIR.RGT -- 挖掘的主要方向，先由左向右，整個平面完成後再從右向左，持續反覆
 while hgt < builder:getHeight() do
 
     local wgt = 0
