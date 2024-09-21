@@ -118,6 +118,7 @@ function WakuTurtle:new(name, turtle, length, weight, height, xShift, yShift)
     --obj:findTorch()
     obj:saveReserveBlocks()
     obj:printReserveBlocks()
+    obj:log()
     return obj
 end
 
