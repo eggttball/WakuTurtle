@@ -18,7 +18,7 @@ while hgt < builder:getHeight() do
     local wgt = 0
     local facing = builder.facing   -- 暫存原本的挖掘方向
 
-    -- 接下來由右向左持續來回挖掘，直到寬度到達 Weight
+    -- 持續來回挖掘平面的方塊，直到寬度到達 Weight
     while wgt < builder:getWeight() do
         -- 確認眼前的方塊，根據建築藍圖是否應該保留
         while builder:isReserveBlock() do
@@ -54,7 +54,4 @@ while hgt < builder:getHeight() do
 end
 
 
--- 紀錄工作結束後最後位置
-builder:log()
-builder:backToChest()
---builder:backToWork()
+builder:backToStartPoint()
