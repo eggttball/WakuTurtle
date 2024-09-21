@@ -1,10 +1,8 @@
 DIR = {
-    UP = 1,     -- 挖掘方向 1: 上, -1: 下
-    DWN = -1,
-    FWD = 2,    -- 正面朝向 2: 前, 4: 右, 6: 後, 8: 左
-    RGT = 4,
-    BCK = 6,
-    LFT = 8
+    NORTH = 2,
+    EAST  = 4,
+    SOUTH = 6,
+    WEST  = 8
 }
 
 -- 相對方位（除了 UP、DWN 是絕對方位之外，其他都是相對）
@@ -19,12 +17,10 @@ POS = {
 
 
 local oppositeDir = {
-    [DIR.UP] = DIR.DWN,
-    [DIR.DWN] = DIR.UP,
-    [DIR.FWD] = DIR.BCK,
-    [DIR.BCK] = DIR.FWD,
-    [DIR.LFT] = DIR.RGT,
-    [DIR.RGT] = DIR.LFT
+    [DIR.NORTH] = DIR.SOUTH,
+    [DIR.SOUTH] = DIR.NORTH,
+    [DIR.WEST] = DIR.EAST,
+    [DIR.EAST] = DIR.WEST
 }
 
 

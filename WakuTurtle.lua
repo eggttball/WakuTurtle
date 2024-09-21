@@ -54,8 +54,8 @@ WakuTurtle = {
         y = 0,
         z = 0
     },
-    facing = DIR.FWD,
-    lastFacing = DIR.FWD,
+    facing = DIR.NORTH,
+    lastFacing = DIR.NORTH,
     direction = POS.FWD
 }
 
@@ -148,26 +148,26 @@ function WakuTurtle:move(pos)
     if pos == POS.FWD then
         result = self.turtle.forward()
         if result then
-            if self.facing == DIR.FWD then
+            if self.facing == DIR.NORTH then
                 self.pos.z = self.pos.z + 1
-            elseif self.facing == DIR.BCK then
+            elseif self.facing == DIR.SOUTH then
                 self.pos.z = self.pos.z - 1
-            elseif self.facing == DIR.LFT then
+            elseif self.facing == DIR.WEST then
                 self.pos.x = self.pos.x - 1
-            elseif self.facing == DIR.RGT then
+            elseif self.facing == DIR.EAST then
                 self.pos.x = self.pos.x + 1
             end
         end
     elseif pos == POS.BCK then
         result = self.turtle.back()
         if result then
-            if self.facing == DIR.FWD then
+            if self.facing == DIR.NORTH then
                 self.pos.z = self.pos.z - 1
-            elseif self.facing == DIR.BCK then
+            elseif self.facing == DIR.SOUTH then
                 self.pos.z = self.pos.z + 1
-            elseif self.facing == DIR.LFT then
+            elseif self.facing == DIR.WEST then
                 self.pos.x = self.pos.x + 1
-            elseif self.facing == DIR.RGT then
+            elseif self.facing == DIR.EAST then
                 self.pos.x = self.pos.x - 1
             end
         end
@@ -280,14 +280,14 @@ end
 
 function WakuTurtle:turnLeft()
     local result = self.turtle.turnLeft();
-    if self.facing == DIR.FWD then
-        self.facing = DIR.LFT
-    elseif self.facing == DIR.LFT then
-        self.facing = DIR.BCK
-    elseif self.facing == DIR.BCK then
-        self.facing = DIR.RGT
-    elseif self.facing == DIR.RGT then
-        self.facing = DIR.FWD
+    if self.facing == DIR.NORTH then
+        self.facing = DIR.WEST
+    elseif self.facing == DIR.WEST then
+        self.facing = DIR.SOUTH
+    elseif self.facing == DIR.SOUTH then
+        self.facing = DIR.EAST
+    elseif self.facing == DIR.EAST then
+        self.facing = DIR.NORTH
     end
 
     return result
@@ -296,14 +296,14 @@ end
 
 function WakuTurtle:turnRight()
     local result = self.turtle.turnRight();
-    if self.facing == DIR.FWD then
-        self.facing = DIR.RGT
-    elseif self.facing == DIR.RGT then
-        self.facing = DIR.BCK
-    elseif self.facing == DIR.BCK then
-        self.facing = DIR.LFT
-    elseif self.facing == DIR.LFT then
-        self.facing = DIR.FWD
+    if self.facing == DIR.NORTH then
+        self.facing = DIR.EAST
+    elseif self.facing == DIR.EAST then
+        self.facing = DIR.SOUTH
+    elseif self.facing == DIR.SOUTH then
+        self.facing = DIR.WEST
+    elseif self.facing == DIR.WEST then
+        self.facing = DIR.NORTH
     end
 
     return result
@@ -367,11 +367,11 @@ end
 -- 移動到座標 x, y, z
 function WakuTurtle:gotoPos(x, y, z)
     while self.pos.z > z do
-        self:faceTo(DIR.BCK)
+        self:faceTo(DIR.SOUTH)
         self:move(POS.FWD)
     end
     while self.pos.z < z do
-        self:faceTo(DIR.FWD)
+        self:faceTo(DIR.NORTH)
         self:move(POS.FWD)
     end
 
@@ -383,11 +383,11 @@ function WakuTurtle:gotoPos(x, y, z)
     end
 
     while self.pos.x > x do
-        self:faceTo(DIR.LFT)
+        self:faceTo(DIR.WEST)
         self:move(POS.FWD)
     end
     while self.pos.x < x do
-        self:faceTo(DIR.RGT)
+        self:faceTo(DIR.EAST)
         self:move(POS.FWD)
     end
 end
@@ -397,7 +397,7 @@ end
 function WakuTurtle:backToStartPoint()
     self:saveCurrentPos()
     self:gotoPos(self._start_x, self._start_y, self._start_z)
-    self:faceTo(DIR.FWD)
+    self:faceTo(DIR.NORTH)
 end
 
 -- 回到儲物箱位置的上方
@@ -405,7 +405,7 @@ function WakuTurtle:backToChest()
     self:saveCurrentPos()
     self:gotoPos(self._start_x, self._start_y, self._start_z)
     self:dropAllItems()
-    self:faceTo(DIR.FWD)
+    self:faceTo(DIR.NORTH)
 end
 
 -- 回到之前暫停工作的地方

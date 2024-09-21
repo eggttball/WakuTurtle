@@ -12,7 +12,7 @@ local builder = WakuTurtle:new("Ant", turtle, length, weight, height, xShift, yS
 builder:gotoStartPos()
 
 local hgt = 0
-local dir = DIR.RGT -- 挖掘的主要方向，先由左向右，整個平面完成後再從右向左，持續反覆
+local dir = DIR.EAST -- 挖掘的主要方向，先由左向右，整個平面完成後再從右向左，持續反覆
 while hgt < builder:getHeight() do
 
     local wgt = 0
