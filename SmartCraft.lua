@@ -7,7 +7,7 @@ local xShift = tonumber(arg[4]) or 0    -- 右移格數，調整挖掘的起始�
 local yShift = tonumber(arg[5]) or 0    -- 垂直移動格數，調整挖掘的上下起始位置。理由同上
 
 
-local builder = WakuTurtle:new("Ant", turtle, length, weight, height)
+local builder = WakuTurtle:new("Ant", turtle, length, weight, height, xShift, yShift)
 builder:log()
 
 -- 初始位置必須是在儲物箱正上方

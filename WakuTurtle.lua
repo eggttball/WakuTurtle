@@ -5,6 +5,8 @@ WakuTurtle = {
     _start_x = 0,   -- Start Point
     _start_y = 0,
     _start_z = 0,
+    _shift_x = 0,
+    _shift_y = 0,
     _blocks_to_dig = {  -- 限制可以挖掘的地形，避免不小心程式寫錯，挖到失控，把家給鏟了
         "minecraft:stone",      -- 石頭
         "minecraft:cobblestone",-- 鵝卵石
@@ -94,7 +96,7 @@ function WakuTurtle:findTorch()
     end
 end
 
-function WakuTurtle:new(name, turtle, length, weight, height)
+function WakuTurtle:new(name, turtle, length, weight, height, xShift, yShift)
     local obj = {}
     setmetatable(obj, self)
     self.__index = self
@@ -104,6 +106,8 @@ function WakuTurtle:new(name, turtle, length, weight, height)
     obj.length = (length and length >= 1 and length) or 1
     obj.weight = (weight and weight >= 1 and weight) or 1
     obj.height = (height and height >= 1 and height) or 1
+    obj._shift_x = xShift
+    obj._shift_y = yShift
 
     -- Show initial status
     obj.createTime = os.date(self._time_format)
@@ -189,7 +193,7 @@ end
 
 -- 確認建築藍圖，檢查前面的方塊是否應該保留
 function WakuTurtle:isReserveBlock()
-    if reserveBlocks[4 - self.pos.y][self.pos.x + 2] == 1 then
+    if reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 2 + self._shift_x] == 1 then
         return true
     else
         return false
