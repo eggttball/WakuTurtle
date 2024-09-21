@@ -26,20 +26,20 @@ while hgt < builder:getHeight() do
             if  wgt == builder:getWeight() then goto continue end
             -- 眼前的方塊必須保留，所以跳過，繼續往前一格
             builder:faceTo(dir)
-            builder:digAuto(DIR.FWD, 1)
+            builder:digAuto(POS.FWD, 1)
         end
 
         -- 眼前的方塊可以挖掉，先面向原本的挖掘方向
         builder:faceTo(facing)
 
         -- 往前挖掘一整排的方塊
-        builder:digAuto(DIR.FWD, builder:getLength() + 1)
+        builder:digAuto(POS.FWD, builder:getLength() + 1)
         -- 挖掉一排後，下次挖掘方向要反轉
         facing = DIR.getRevDir(facing)
         wgt = wgt + 1
         if wgt == builder:getWeight() then break end
         builder:faceTo(dir)
-        builder:digAuto(DIR.FWD, 1)
+        builder:digAuto(POS.FWD, 1)
     end
 
     ::continue::
@@ -47,7 +47,7 @@ while hgt < builder:getHeight() do
     -- 往上挖掘一格後挖回來
     hgt = hgt + 1
     if hgt < builder:getHeight() then
-        builder:dig(DIR.UP)
+        builder:dig(POS.UP)
         dir = DIR.getRevDir(dir)
         builder:faceTo(facing)
     end

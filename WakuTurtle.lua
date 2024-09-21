@@ -56,7 +56,7 @@ WakuTurtle = {
     },
     facing = DIR.FWD,
     lastFacing = DIR.FWD,
-    direction = DIR.FWD
+    direction = POS.FWD
 }
 
 local reserveBlocks = {
@@ -126,10 +126,10 @@ end
 -- 移動到挖掘的起始位置
 function WakuTurtle:gotoStartPos()
     -- 根據 _shift_x 數值，左右調整挖掘的起始位置
-    self:digAuto(DIR.RGT, self._shift_x, true)
+    self:digAuto(POS.RGT, self._shift_x, true)
 
     -- 根據 _shift_y 數值，上下調整挖掘的起始位置
-    self:digAuto(DIR.UP, self._shift_y)
+    self:digAuto(POS.UP, self._shift_y)
 end
 
 
@@ -142,10 +142,10 @@ function WakuTurtle:saveCurrentPos()
 end
 
 
--- 朝著 dir 方向移動一格
-function WakuTurtle:move(dir)
+-- 朝著 pos 方向移動一格
+function WakuTurtle:move(pos)
     local result = false;
-    if dir == DIR.FWD then
+    if pos == POS.FWD then
         result = self.turtle.forward()
         if result then
             if self.facing == DIR.FWD then
@@ -158,7 +158,7 @@ function WakuTurtle:move(dir)
                 self.pos.x = self.pos.x + 1
             end
         end
-    elseif dir == DIR.BCK then
+    elseif pos == POS.BCK then
         result = self.turtle.back()
         if result then
             if self.facing == DIR.FWD then
@@ -171,10 +171,10 @@ function WakuTurtle:move(dir)
                 self.pos.x = self.pos.x - 1
             end
         end
-    elseif dir == DIR.UP then
+    elseif pos == POS.UP then
         result = self.turtle.up()
         if result then self.pos.y = self.pos.y + 1 end
-    elseif dir == DIR.DWN then
+    elseif pos == POS.DWN then
         result = self.turtle.down()
         if result then self.pos.y = self.pos.y - 1 end
     end
@@ -251,28 +251,28 @@ function WakuTurtle:keepDigging()
     return result
 end
 
--- 朝著 dir 方向挖掘，並移動一格
+-- 朝著 pos 方向挖掘，並移動一格
 -- move == false 時只是挖掘而不移動
-function WakuTurtle:dig(dir, move)
-    dir = dir or DIR.FWD
+function WakuTurtle:dig(pos, move)
+    pos = pos or POS.FWD
     if move == nil then move = true end
 
     local result = false
     local exist = false
     local block = nil
 
-    if dir == DIR.FWD then
+    if pos == POS.FWD then
         exist, block = self.turtle.inspect()
         if exist and self:allowedToDig(block.name) then result = self:keepDigging() end
-    elseif dir == DIR.UP then
+    elseif pos == POS.UP then
         exist, block = self.turtle.inspectUp()
         if exist and self:allowedToDig(block.name) then result = self.turtle.digUp() end
-    elseif dir == DIR.DWN then
+    elseif pos == POS.DWN then
         exist, block = self.turtle.inspectDown()
         if exist and self:allowedToDig(block.name) then result = self.turtle.digDown() end
     end
 
-    if move and (not exist or result) then self:move(dir) end
+    if move and (not exist or result) then self:move(pos) end
 
     return result
 end
@@ -325,39 +325,39 @@ function WakuTurtle:faceTo(dir)
 end
 
 
--- 朝著 dir 方向挖掘一段距離
-function WakuTurtle:digAuto(dir, distance, shift)
+-- 朝著 pos 方向挖掘一段距離
+function WakuTurtle:digAuto(pos, distance, shift)
     if shift == nil then shift = false end
     if distance == 0 then return end
 
     if distance < 0 then
-        dir = DIR.getRevDir(dir)
+        pos = POS.getRevDir(pos)
         distance = math.abs(distance)
     end
 
-    local pos = 0
-    if dir == DIR.LFT then
+    local d = 0
+    if pos == POS.LFT then
         self:turnLeft()
-        while pos < distance do
-            self:dig(DIR.FWD)
-            pos = pos + 1
+        while d < distance do
+            self:dig(POS.FWD)
+            d = d + 1
         end
         -- shift to left
         if shift then self:turnRight() end
 
-    elseif dir == DIR.RGT then
+    elseif pos == POS.RGT then
         self:turnRight()
-        while pos < distance do
-            self:dig(DIR.FWD)
-            pos = pos + 1
+        while d < distance do
+            self:dig(POS.FWD)
+            d = d + 1
         end
         -- shift to right
         if shift then self:turnLeft() end
 
     else
-        while pos < distance do
-            self:dig(dir)
-            pos = pos + 1
+        while d < distance do
+            self:dig(pos)
+            d = d + 1
         end
     end
 
@@ -368,27 +368,27 @@ end
 function WakuTurtle:gotoPos(x, y, z)
     while self.pos.z > z do
         self:faceTo(DIR.BCK)
-        self:move(DIR.FWD)
+        self:move(POS.FWD)
     end
     while self.pos.z < z do
         self:faceTo(DIR.FWD)
-        self:move(DIR.FWD)
+        self:move(POS.FWD)
     end
 
     while self.pos.y > y do
-        self:move(DIR.DWN)
+        self:move(POS.DWN)
     end
     while self.pos.y < y do
-        self:move(DIR.UP)
+        self:move(POS.UP)
     end
 
     while self.pos.x > x do
         self:faceTo(DIR.LFT)
-        self:move(DIR.FWD)
+        self:move(POS.FWD)
     end
     while self.pos.x < x do
         self:faceTo(DIR.RGT)
-        self:move(DIR.FWD)
+        self:move(POS.FWD)
     end
 end
 
@@ -451,6 +451,6 @@ function WakuTurtle:placeTorch()
     end
 
     self.turtle.select(self._loc_torch)
-    self:dig(DIR.UP, false)
+    self:dig(POS.UP, false)
     self.turtle.placeUp()
 end
