@@ -365,7 +365,7 @@ end
 
 
 -- 移動到座標 x, y, z
-function WakuTurtle:goToPos(x, y, z)
+function WakuTurtle:gotoPos(x, y, z)
     while self.pos.z > z do
         self:faceTo(DIR.BCK)
         self:move(DIR.FWD)
@@ -396,21 +396,21 @@ end
 -- 回到初始位置 0, 0, 0
 function WakuTurtle:backToStartPoint()
     self:saveCurrentPos()
-    self:goToPos(self._start_x, self._start_y, self._start_z)
+    self:gotoPos(self._start_x, self._start_y, self._start_z)
     self:faceTo(DIR.FWD)
 end
 
 -- 回到儲物箱位置的上方
 function WakuTurtle:backToChest()
     self:saveCurrentPos()
-    self:goToPos(self._start_x, self._start_y, self._start_z)
+    self:gotoPos(self._start_x, self._start_y, self._start_z)
     self:dropAllItems()
     self:faceTo(DIR.FWD)
 end
 
 -- 回到之前暫停工作的地方
 function WakuTurtle:backToWork()
-    self:goToPos(self.lastPos.x, self.lastPos.y, self.lastPos.z)
+    self:gotoPos(self.lastPos.x, self.lastPos.y, self.lastPos.z)
     while self.facing ~= self.lastFacing do
         self:turnRight()
     end
