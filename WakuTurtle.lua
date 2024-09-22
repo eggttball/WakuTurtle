@@ -142,9 +142,10 @@ function WakuTurtle:saveCurrentPos()
 end
 
 
--- 朝著 pos 方向移動一格
-function WakuTurtle:move(pos)
+-- 朝著 pos 方向移動
+function WakuTurtle:move(pos, distance)
     local result = false;
+    distance = distance or 1
     if pos == POS.FWD then
         result = self.turtle.forward()
         if result then
@@ -178,6 +179,8 @@ function WakuTurtle:move(pos)
         result = self.turtle.down()
         if result then self.pos.y = self.pos.y - 1 end
     end
+
+    if distance > 1 then return self:move(pos, distance - 1) end
 
     return result
 end
