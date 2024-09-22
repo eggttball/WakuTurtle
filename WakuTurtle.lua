@@ -320,6 +320,11 @@ function WakuTurtle:turnRight(times)
 end
 
 
+function WakuTurtle:turnBack()
+    return self:turnLeft(2);
+end
+
+
 function WakuTurtle:faceTo(dir)
     if dir == self.facing then return end
 
