@@ -397,6 +397,31 @@ function WakuTurtle:digAuto(pos, distance, shift)
 end
 
 
+function WakuTurtle:placeAuto(pos, distance)
+    if distance == 0 then return false end
+    local buildingBlocksLoc = self:findBuildingBlocks()
+    if buildingBlocksLoc == 0 then
+        print("No building blocks found")
+        return false
+    end
+
+    if distance < 0 then
+        pos = POS.getRevDir(pos)
+        distance = math.abs(distance)
+    end
+
+    if pos == POS.BCK then self:turnBack() end
+    local d = 0
+    self:move(POS.BCK)
+    while d < distance and buildingBlocksLoc > 0 do
+        self:move(POS.BCK)
+        self.turtle.place()
+        buildingBlocksLoc = self:findBuildingBlocks()
+        d = d + 1
+    end
+end
+
+
 -- 移動到座標 x, y, z
 function WakuTurtle:gotoPos(x, y, z)
     while self.pos.z > z do
