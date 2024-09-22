@@ -2,6 +2,7 @@ require "Base"
 
 WakuTurtle = {
     _time_format = "%Y-%m-%d %H:%M:%S",
+    _building_mode = MODE.DIG,
     _start_x = 0,   -- Start Point
     _start_y = 0,
     _start_z = 0,
@@ -96,13 +97,14 @@ function WakuTurtle:findTorch()
     end
 end
 
-function WakuTurtle:new(name, turtle, length, weight, height, xShift, yShift)
+function WakuTurtle:new(name, turtle, mode, length, weight, height, xShift, yShift)
     local obj = {}
     setmetatable(obj, self)
     self.__index = self
 
     obj.name = name
     obj.turtle = turtle;
+    obj._building_mode = mode or obj._building_mode
     obj.length = (length and length >= 1 and length) or 1
     obj.weight = (weight and weight >= 1 and weight) or 1
     obj.height = (height and height >= 1 and height) or 1
@@ -142,9 +144,10 @@ function WakuTurtle:saveCurrentPos()
 end
 
 
--- 朝著 pos 方向移動一格
-function WakuTurtle:move(pos)
+-- 朝著 pos 方向移動
+function WakuTurtle:move(pos, distance)
     local result = false;
+    distance = distance or 1
     if pos == POS.FWD then
         result = self.turtle.forward()
         if result then
@@ -179,6 +182,8 @@ function WakuTurtle:move(pos)
         if result then self.pos.y = self.pos.y - 1 end
     end
 
+    if distance > 1 then return self:move(pos, distance - 1) end
+
     return result
 end
 
@@ -202,9 +207,11 @@ function WakuTurtle:allowedToDig(blockName)
     return checkList(blockName, self._blocks_to_dig)
 end
 
--- 確認建築藍圖，檢查前面的方塊是否應該保留
-function WakuTurtle:isReserveBlock()
-    if reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 - self._shift_x] == 1 then
+-- 確認建築藍圖，檢查前面的空間是否應該保留
+function WakuTurtle:isReserveSpace()
+    local reserve = reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 - self._shift_x]
+    if (self._building_mode == MODE.DIG and reserve == 1) or
+       (self._building_mode == MODE.FILL and reserve == 0) then
         return true
     else
         return false
@@ -226,6 +233,21 @@ function WakuTurtle:saveReserveBlocks()
         end
         loc = loc + 1
     end
+end
+
+
+-- 從小烏龜的儲物箱中尋找建築用的方塊
+function WakuTurtle:findBuildingBlocks()
+    local loc = 1
+    while loc <= 16 and self.turtle.select(loc) do
+        if self.turtle.getItemCount(loc) > 0 then
+            local items = self.turtle.getItemDetail()
+            if checkList(items.name, self._blocks_to_build) then return loc end
+        end
+        loc = loc + 1
+    end
+
+    return 0
 end
 
 
@@ -278,35 +300,50 @@ function WakuTurtle:dig(pos, move)
 end
 
 
-function WakuTurtle:turnLeft()
-    local result = self.turtle.turnLeft();
-    if self.facing == DIR.NORTH then
-        self.facing = DIR.WEST
-    elseif self.facing == DIR.WEST then
-        self.facing = DIR.SOUTH
-    elseif self.facing == DIR.SOUTH then
-        self.facing = DIR.EAST
-    elseif self.facing == DIR.EAST then
-        self.facing = DIR.NORTH
+function WakuTurtle:turnLeft(times)
+    times = times or 1
+    local result = false
+    while times > 0 do
+        result = self.turtle.turnLeft();
+        if self.facing == DIR.NORTH then
+            self.facing = DIR.WEST
+        elseif self.facing == DIR.WEST then
+            self.facing = DIR.SOUTH
+        elseif self.facing == DIR.SOUTH then
+            self.facing = DIR.EAST
+        elseif self.facing == DIR.EAST then
+            self.facing = DIR.NORTH
+        end
+        times = times - 1
     end
 
     return result
 end
 
 
-function WakuTurtle:turnRight()
-    local result = self.turtle.turnRight();
-    if self.facing == DIR.NORTH then
-        self.facing = DIR.EAST
-    elseif self.facing == DIR.EAST then
-        self.facing = DIR.SOUTH
-    elseif self.facing == DIR.SOUTH then
-        self.facing = DIR.WEST
-    elseif self.facing == DIR.WEST then
-        self.facing = DIR.NORTH
+function WakuTurtle:turnRight(times)
+    times = times or 1
+    local result = false
+    while times > 0 do
+        result = self.turtle.turnRight();
+        if self.facing == DIR.NORTH then
+            self.facing = DIR.EAST
+        elseif self.facing == DIR.EAST then
+            self.facing = DIR.SOUTH
+        elseif self.facing == DIR.SOUTH then
+            self.facing = DIR.WEST
+        elseif self.facing == DIR.WEST then
+            self.facing = DIR.NORTH
+        end
+        times = times - 1
     end
 
     return result
+end
+
+
+function WakuTurtle:turnBack()
+    return self:turnLeft(2);
 end
 
 
@@ -361,6 +398,31 @@ function WakuTurtle:digAuto(pos, distance, shift)
         end
     end
 
+end
+
+
+function WakuTurtle:placeAuto(pos, distance)
+    if distance == 0 then return false end
+    local buildingBlocksLoc = self:findBuildingBlocks()
+    if buildingBlocksLoc == 0 then
+        print("No building blocks found")
+        return false
+    end
+
+    if distance < 0 then
+        pos = POS.getRevDir(pos)
+        distance = math.abs(distance)
+    end
+
+    if pos == POS.FWD then self:turnBack() end
+    local d = 0
+    self:move(POS.BCK)
+    while d < distance and buildingBlocksLoc > 0 do
+        self:move(POS.BCK)
+        self.turtle.place()
+        buildingBlocksLoc = self:findBuildingBlocks()
+        d = d + 1
+    end
 end
 
 

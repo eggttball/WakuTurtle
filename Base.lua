@@ -1,3 +1,10 @@
+-- 建築模式
+MODE = {
+    DIG = 0,
+    FILL = 1
+}
+
+
 DIR = {
     NORTH = 2,
     EAST  = 4,
