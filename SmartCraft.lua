@@ -13,11 +13,15 @@ builder:gotoStartPos()
 
 local hgt = 0
 local dir = DIR.EAST -- 挖掘的主要方向，先由左向右，整個平面完成後再從右向左，持續反覆
+local facing = builder.facing       -- 暫存原本的挖掘方向
+local nextActionOnDir = function () -- 依據主要方向，再往前挖掘一格
+    builder:faceTo(dir)
+    builder:digAuto(POS.FWD, 1)
+end
+
 while hgt < builder:getHeight() do
 
     local wgt = 0
-    local facing = builder.facing   -- 暫存原本的挖掘方向
-
     -- 持續來回挖掘平面的方塊，直到寬度到達 Weight
     while wgt < builder:getWeight() do
         -- 確認眼前的方塊，根據建築藍圖是否應該保留
@@ -25,13 +29,11 @@ while hgt < builder:getHeight() do
             wgt = wgt + 1
             if  wgt == builder:getWeight() then goto continue end
             -- 眼前的方塊必須保留，所以跳過，繼續往前一格
-            builder:faceTo(dir)
-            builder:digAuto(POS.FWD, 1)
+            nextActionOnDir()
         end
 
-        -- 眼前的方塊可以挖掉，先面向原本的挖掘方向
+        -- 眼前整排的方塊可以挖掉，先面向原本的挖掘方向
         builder:faceTo(facing)
-
         -- 往前挖掘一整排的方塊
         builder:digAuto(POS.FWD, builder:getLength() + 1)
         -- 記錄目前座標，這是確保可以回到原點的位置
@@ -40,8 +42,7 @@ while hgt < builder:getHeight() do
         facing = DIR.getRevDir(facing)
         wgt = wgt + 1
         if wgt == builder:getWeight() then break end
-        builder:faceTo(dir)
-        builder:digAuto(POS.FWD, 1)
+        nextActionOnDir()
     end
 
     ::continue::
@@ -51,7 +52,6 @@ while hgt < builder:getHeight() do
     if hgt < builder:getHeight() then
         builder:dig(POS.UP)
         dir = DIR.getRevDir(dir)
-        builder:faceTo(facing)
     end
 end
 
