@@ -232,6 +232,21 @@ function WakuTurtle:saveReserveBlocks()
 end
 
 
+-- 從小烏龜的儲物箱中尋找建築用的方塊
+function WakuTurtle:findBuildingBlocks()
+    local loc = 1
+    while loc <= 16 and self.turtle.select(loc) do
+        if self.turtle.getItemCount(loc) > 0 then
+            local items = self.turtle.getItemDetail()
+            if checkList(items.name, self._blocks_to_build) then return loc end
+        end
+        loc = loc + 1
+    end
+
+    return 0
+end
+
+
 -- 把已儲存的藍圖輸出到螢幕上，方便確認
 function WakuTurtle:printReserveBlocks()
     for i = 1, #reserveBlocks do
