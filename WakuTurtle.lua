@@ -278,32 +278,42 @@ function WakuTurtle:dig(pos, move)
 end
 
 
-function WakuTurtle:turnLeft()
-    local result = self.turtle.turnLeft();
-    if self.facing == DIR.NORTH then
-        self.facing = DIR.WEST
-    elseif self.facing == DIR.WEST then
-        self.facing = DIR.SOUTH
-    elseif self.facing == DIR.SOUTH then
-        self.facing = DIR.EAST
-    elseif self.facing == DIR.EAST then
-        self.facing = DIR.NORTH
+function WakuTurtle:turnLeft(times)
+    times = times or 1
+    local result = false
+    while times > 0 do
+        result = self.turtle.turnLeft();
+        if self.facing == DIR.NORTH then
+            self.facing = DIR.WEST
+        elseif self.facing == DIR.WEST then
+            self.facing = DIR.SOUTH
+        elseif self.facing == DIR.SOUTH then
+            self.facing = DIR.EAST
+        elseif self.facing == DIR.EAST then
+            self.facing = DIR.NORTH
+        end
+        times = times - 1
     end
 
     return result
 end
 
 
-function WakuTurtle:turnRight()
-    local result = self.turtle.turnRight();
-    if self.facing == DIR.NORTH then
-        self.facing = DIR.EAST
-    elseif self.facing == DIR.EAST then
-        self.facing = DIR.SOUTH
-    elseif self.facing == DIR.SOUTH then
-        self.facing = DIR.WEST
-    elseif self.facing == DIR.WEST then
-        self.facing = DIR.NORTH
+function WakuTurtle:turnRight(times)
+    times = times or 1
+    local result = false
+    while times > 0 do
+        result = self.turtle.turnRight();
+        if self.facing == DIR.NORTH then
+            self.facing = DIR.EAST
+        elseif self.facing == DIR.EAST then
+            self.facing = DIR.SOUTH
+        elseif self.facing == DIR.SOUTH then
+            self.facing = DIR.WEST
+        elseif self.facing == DIR.WEST then
+            self.facing = DIR.NORTH
+        end
+        times = times - 1
     end
 
     return result
