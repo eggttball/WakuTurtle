@@ -408,12 +408,9 @@ function WakuTurtle:backToChest()
     self:faceTo(DIR.NORTH)
 end
 
--- 回到之前暫停工作的地方
-function WakuTurtle:backToWork()
+-- 回到上次暫存的位置
+function WakuTurtle:backToLastPos()
     self:gotoPos(self.lastPos.x, self.lastPos.y, self.lastPos.z)
-    while self.facing ~= self.lastFacing do
-        self:turnRight()
-    end
 end
 
 -- 把攜帶的全部物品放入儲物箱

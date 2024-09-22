@@ -34,6 +34,8 @@ while hgt < builder:getHeight() do
 
         -- 往前挖掘一整排的方塊
         builder:digAuto(POS.FWD, builder:getLength() + 1)
+        -- 記錄目前座標，這是確保可以回到原點的位置
+        builder:saveCurrentPos()
         -- 挖掉一排後，下次挖掘方向要反轉
         facing = DIR.getRevDir(facing)
         wgt = wgt + 1
@@ -53,5 +55,6 @@ while hgt < builder:getHeight() do
     end
 end
 
-
+-- 先回到上次的位置，確保中間不會遇到任何阻擋，再回到起始位置
+builder:backToLastPos()
 builder:backToStartPoint()
