@@ -2,6 +2,7 @@ require "Base"
 
 WakuTurtle = {
     _time_format = "%Y-%m-%d %H:%M:%S",
+    _building_mode = MODE.DIG,
     _start_x = 0,   -- Start Point
     _start_y = 0,
     _start_z = 0,
@@ -96,13 +97,14 @@ function WakuTurtle:findTorch()
     end
 end
 
-function WakuTurtle:new(name, turtle, length, weight, height, xShift, yShift)
+function WakuTurtle:new(name, turtle, mode, length, weight, height, xShift, yShift)
     local obj = {}
     setmetatable(obj, self)
     self.__index = self
 
     obj.name = name
     obj.turtle = turtle;
+    obj._building_mode = mode or obj._building_mode
     obj.length = (length and length >= 1 and length) or 1
     obj.weight = (weight and weight >= 1 and weight) or 1
     obj.height = (height and height >= 1 and height) or 1
@@ -205,9 +207,11 @@ function WakuTurtle:allowedToDig(blockName)
     return checkList(blockName, self._blocks_to_dig)
 end
 
--- 確認建築藍圖，檢查前面的方塊是否應該保留
-function WakuTurtle:isReserveBlock()
-    if reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 - self._shift_x] == 1 then
+-- 確認建築藍圖，檢查前面的空間是否應該保留
+function WakuTurtle:isReserveSpace()
+    local reserve = reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 - self._shift_x]
+    if (self._building_mode == MODE.DIG and reserve == 1) or
+       (self._building_mode == MODE.FILL and reserve == 0) then
         return true
     else
         return false
@@ -410,7 +414,7 @@ function WakuTurtle:placeAuto(pos, distance)
         distance = math.abs(distance)
     end
 
-    if pos == POS.BCK then self:turnBack() end
+    if pos == POS.FWD then self:turnBack() end
     local d = 0
     self:move(POS.BCK)
     while d < distance and buildingBlocksLoc > 0 do
