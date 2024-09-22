@@ -66,8 +66,7 @@ if builder._building_mode == MODE.DIG then
     -- 先回到上次的位置，確保中間不會遇到任何阻擋，再回到起始位置
     builder:backToLastPos()
 elseif builder._building_mode == MODE.FILL and builder.facing == DIR.SOUTH then
-    nextActionOnDir()
-    builder:faceTo(DIR.SOUTH)
+    builder:dig(POS.UP)
     builder:digAuto(POS.FWD, builder:getLength() + 1)
 end
 
