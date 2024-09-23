@@ -1,5 +1,5 @@
 -- 建築模式
-MODE = {
+BUILD_MODE = {
     DIG = 0,
     FILL = 1
 }

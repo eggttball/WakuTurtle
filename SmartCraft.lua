@@ -1,6 +1,6 @@
 require "WakuTurtle"
 
-local mode   = tonumber(arg[1])
+local buildMode   = tonumber(arg[1])
 local length = tonumber(arg[2])
 local weight = tonumber(arg[3])
 local height = tonumber(arg[4])
@@ -9,7 +9,7 @@ local yShift = tonumber(arg[6]) or 0    -- 垂直移動格數，調整挖掘的�
 
 
 
-local builder = WakuTurtle:new("Ant", turtle, mode, length, weight, height, xShift, yShift)
+local builder = WakuTurtle:new("Ant", turtle, buildMode, length, weight, height, xShift, yShift)
 -- 移動到初始位置再開始作業
 builder:gotoStartPos()
 
@@ -36,7 +36,7 @@ while hgt < builder:getHeight() do
 
         -- 眼前整排可以挖掘或填補，先面向原本的朝向，然後開始進行
         builder:faceTo(facing)
-        if builder._building_mode == MODE.DIG then
+        if builder._build_mode == BUILD_MODE.DIG then
             builder:digAuto(POS.FWD, builder:getLength() + 1)
             -- 記錄目前座標，這是確保可以回到原點的位置
             builder:saveCurrentPos()
@@ -62,10 +62,10 @@ while hgt < builder:getHeight() do
 end
 
 
-if builder._building_mode == MODE.DIG then
+if builder._build_mode == BUILD_MODE.DIG then
     -- 先回到上次的位置，確保中間不會遇到任何阻擋，再回到起始位置
     builder:backToLastPos()
-elseif builder._building_mode == MODE.FILL and builder.facing == DIR.SOUTH then
+elseif builder._build_mode == BUILD_MODE.FILL and builder.facing == DIR.SOUTH then
     builder:dig(POS.UP)
     builder:digAuto(POS.FWD, builder:getLength() + 1)
 end
