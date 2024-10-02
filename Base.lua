@@ -1,7 +1,12 @@
 -- 建築模式
-MODE = {
+BUILD_MODE = {
     DIG = 0,
     FILL = 1
+}
+
+-- 重複模式
+REPEAT_MODE = {
+    NO_REPEAT = 0   -- 超過布局範圍不重複
 }
 
 
