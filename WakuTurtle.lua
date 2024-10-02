@@ -122,8 +122,9 @@ function WakuTurtle:new(name, turtle, buildMode, repeatModeX, repeatModeY, lengt
     print("Digging (L x W x H):", obj.length, "x", obj.weight, "x", obj.height)
 
     --obj:findTorch()
-    obj:saveReserveBlocks()
-    obj:printReserveBlocks()
+    if turtle then
+        obj:saveReserveBlocks()
+    end
     obj:log()
     return obj
 end
@@ -247,6 +248,11 @@ function WakuTurtle:saveReserveBlocks()
         end
         loc = loc + 1
     end
+end
+
+
+function WakuTurtle:assignReserveBlocks(newReserveBlocks)
+    reserveBlocks = newReserveBlocks
 end
 
 

@@ -12,6 +12,7 @@ local yShift = tonumber(arg[8]) or 0    -- 垂直移動格數，調整挖掘的�
 
 
 local builder = WakuTurtle:new("Ant", turtle, buildMode, repeatModeX, repeatModeY, length, weight, height, xShift, yShift)
+builder:printReserveBlocks()
 -- 移動到初始位置再開始作業
 builder:gotoStartPos()
 
