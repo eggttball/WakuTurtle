@@ -219,7 +219,9 @@ function WakuTurtle:isReserveSpace()
     elseif self._repeat_mode_y == REPEAT_MODE.NO_REPEAT and (self.pos.y < self._shift_y or self.pos.y > 3 + self._shift_y) then
         reserve = 0
     else
-        reserve = reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 - self._shift_x]
+        local reviseX = ((self.pos.x % 4 + 1 - self._shift_x) - 1) % 4 + 1
+        local reviseY = ((4 - self.pos.y % 4 + self._shift_y) - 1) % 4 + 1
+        reserve = reserveBlocks[reviseY][reviseX]
     end
 
     if (self._build_mode == BUILD_MODE.DIG and reserve == 1) or
