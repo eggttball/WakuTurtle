@@ -7,7 +7,8 @@ BUILD_MODE = {
 -- 重複模式
 REPEAT_MODE = {
     NO_REPEAT = 0,  -- 超過布局範圍不重複
-    REPEAT    = 1
+    REPEAT    = 1,
+    MIRROR    = 2
 }
 
 
