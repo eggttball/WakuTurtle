@@ -4,6 +4,11 @@ BUILD_MODE = {
     FILL = 1
 }
 
+-- 重複模式
+REPEAT_MODE = {
+    NO_REPEAT = 0   -- 超過布局範圍不重複
+}
+
 
 DIR = {
     NORTH = 2,

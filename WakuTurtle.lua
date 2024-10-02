@@ -3,6 +3,8 @@ require "Base"
 WakuTurtle = {
     _time_format = "%Y-%m-%d %H:%M:%S",
     _build_mode = BUILD_MODE.DIG,
+    _repeat_mode_x = REPEAT_MODE.NO_REPEAT,
+    _repeat_mode_y = REPEAT_MODE.NO_REPEAT,
     _start_x = 0,   -- Start Point
     _start_y = 0,
     _start_z = 0,
@@ -97,7 +99,7 @@ function WakuTurtle:findTorch()
     end
 end
 
-function WakuTurtle:new(name, turtle, buildMode, length, weight, height, xShift, yShift)
+function WakuTurtle:new(name, turtle, buildMode, repeatModeX, repeatModeY, length, weight, height, xShift, yShift)
     local obj = {}
     setmetatable(obj, self)
     self.__index = self
@@ -105,6 +107,8 @@ function WakuTurtle:new(name, turtle, buildMode, length, weight, height, xShift,
     obj.name = name
     obj.turtle = turtle;
     obj._build_mode = buildMode or obj._build_mode
+    obj._repeat_mode_x = repeatModeX or obj._repeat_mode_x
+    obj._repeat_mode_y = repeatModeY or obj._repeat_mode_y
     obj.length = (length and length >= 1 and length) or 1
     obj.weight = (weight and weight >= 1 and weight) or 1
     obj.height = (height and height >= 1 and height) or 1
@@ -209,7 +213,15 @@ end
 
 -- 確認建築藍圖，檢查前面的空間是否應該保留
 function WakuTurtle:isReserveSpace()
-    local reserve = reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 - self._shift_x]
+    local reserve = 0
+    if self._repeat_mode_x == REPEAT_MODE.NO_REPEAT and (self.pos.x < self._shift_x or self.pos.x > 3 + self._shift_x) then
+        reserve = 0
+    elseif self._repeat_mode_y == REPEAT_MODE.NO_REPEAT and (self.pos.y < self._shift_y or self.pos.y > 3 + self._shift_y) then
+        reserve = 0
+    else
+        reserve = reserveBlocks[4 - self.pos.y + self._shift_y][self.pos.x + 1 - self._shift_x]
+    end
+
     if (self._build_mode == BUILD_MODE.DIG and reserve == 1) or
        (self._build_mode == BUILD_MODE.FILL and reserve == 0) then
         return true
