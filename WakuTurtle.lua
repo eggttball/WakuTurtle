@@ -222,11 +222,11 @@ function WakuTurtle:isReserveSpace()
     else
         local reviseX = ((self.pos.x % 4 + 1 - self._shift_x) - 1) % 4 + 1
         local reviseY = ((4 - self.pos.y % 4 + self._shift_y) - 1) % 4 + 1
-        if self._repeat_mode_x == REPEAT_MODE.MIRROR and ((self.pos.x - self._shift_x) // 4) % 2 == 1 then
+        if self._repeat_mode_x == REPEAT_MODE.MIRROR and (math.floor((self.pos.x - self._shift_x) / 4)) % 2 == 1 then
             reviseX = 5 - reviseX
         end
 
-        if self._repeat_mode_y == REPEAT_MODE.MIRROR and ((self.pos.y - self._shift_y) // 4) % 2 == 1 then
+        if self._repeat_mode_y == REPEAT_MODE.MIRROR and (math.floor((self.pos.y - self._shift_y) / 4)) % 2 == 1 then
             reviseY = 5 - reviseY
         end
         reserve = reserveBlocks[reviseY][reviseX]
