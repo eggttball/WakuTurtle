@@ -142,4 +142,40 @@ function TestWakuTurtle:testIsReserveSpace_DigMode_MirrorY()
 end
 
 
+function TestWakuTurtle:testIsReserveSpace_DigMode_MirrorXY()
+    local len, wgt, hgt = 3, 20, 20
+    local shift_x, shift_y = -2, -1
+    local name = "Fill with MIRROR X and Y, start at " .. shift_x .. ", " .. shift_y
+    local turtle = WakuTurtle:new(name, nil, BUILD_MODE.FILL, REPEAT_MODE.MIRROR, REPEAT_MODE.MIRROR, len, wgt, hgt, shift_x, shift_y)
+    turtle:assignReserveBlocks(reserveBlocks)
+    turtle:printReserveBlocks()
+    turtle.pos.x = 3   turtle.pos.y = 3
+    luaunit.assertFalse(turtle:isReserveSpace())
+    turtle.pos.x = 2   turtle.pos.y = 3
+    luaunit.assertTrue(turtle:isReserveSpace())
+    turtle.pos.x = 2   turtle.pos.y = 6
+    luaunit.assertFalse(turtle:isReserveSpace())
+    turtle.pos.x = 4   turtle.pos.y = 3
+    luaunit.assertFalse(turtle:isReserveSpace())
+    turtle.pos.x = 4   turtle.pos.y = 6
+    luaunit.assertTrue(turtle:isReserveSpace())
+    turtle.pos.x = 6   turtle.pos.y = 7
+    luaunit.assertFalse(turtle:isReserveSpace())
+    turtle.pos.x = 7   turtle.pos.y = 10
+    luaunit.assertFalse(turtle:isReserveSpace())
+    turtle.pos.x = 8   turtle.pos.y = 7
+    luaunit.assertTrue(turtle:isReserveSpace())
+    turtle.pos.x = 9   turtle.pos.y = 10
+    luaunit.assertTrue(turtle:isReserveSpace())
+    turtle.pos.x = 11   turtle.pos.y = 11
+    luaunit.assertFalse(turtle:isReserveSpace())
+    turtle.pos.x = 11   turtle.pos.y = 14
+    luaunit.assertTrue(turtle:isReserveSpace())
+    turtle.pos.x = 12   turtle.pos.y = 11
+    luaunit.assertFalse(turtle:isReserveSpace())
+    turtle.pos.x = 12   turtle.pos.y = 14
+    luaunit.assertTrue(turtle:isReserveSpace())
+end
+
+
 os.exit(luaunit.LuaUnit.run())
