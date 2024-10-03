@@ -20,7 +20,6 @@ function TestWakuTurtle:testIsReserveSpace_DigMode_NoRepeat()
     local name = "Dig with NO_REPEAT, start at " .. shift_x .. ", " .. shift_y
     local turtle = WakuTurtle:new(name, nil, BUILD_MODE.DIG, REPEAT_MODE.NO_REPEAT, REPEAT_MODE.NO_REPEAT, len, wgt, hgt, shift_x, shift_y)
     turtle:assignReserveBlocks(reserveBlocks)
-    turtle:printReserveBlocks()
     turtle.pos.x = -1   turtle.pos.y = -2
     luaunit.assertTrue(turtle:isReserveSpace())
     turtle.pos.x = 1    turtle.pos.y = 1
@@ -44,7 +43,6 @@ function TestWakuTurtle:testIsReserveSpace_DigMode_RepeatX()
     local name = "Dig with REPEAT X, start at " .. shift_x .. ", " .. shift_y
     local turtle = WakuTurtle:new(name, nil, BUILD_MODE.DIG, REPEAT_MODE.REPEAT, REPEAT_MODE.NO_REPEAT, len, wgt, hgt, shift_x, shift_y)
     turtle:assignReserveBlocks(reserveBlocks)
-    turtle:printReserveBlocks()
     turtle.pos.x = 2   turtle.pos.y = -1
     luaunit.assertTrue(turtle:isReserveSpace())
     turtle.pos.x = 3   turtle.pos.y = 0
@@ -66,7 +64,6 @@ function TestWakuTurtle:testIsReserveSpace_DigMode_RepeatY()
     local name = "Dig with REPEAT Y, start at " .. shift_x .. ", " .. shift_y
     local turtle = WakuTurtle:new(name, nil, BUILD_MODE.DIG, REPEAT_MODE.NO_REPEAT, REPEAT_MODE.REPEAT, len, wgt, hgt, shift_x, shift_y)
     turtle:assignReserveBlocks(reserveBlocks)
-    turtle:printReserveBlocks()
     turtle.pos.x = 2   turtle.pos.y = -1
     luaunit.assertFalse(turtle:isReserveSpace())
     turtle.pos.x = 4   turtle.pos.y = 2
@@ -86,7 +83,6 @@ function TestWakuTurtle:testIsReserveSpace_FillMode_RepeatX()
     local name = "Fill with REPEAT X, start at " .. shift_x .. ", " .. shift_y
     local turtle = WakuTurtle:new(name, nil, BUILD_MODE.FILL, REPEAT_MODE.REPEAT, REPEAT_MODE.NO_REPEAT, len, wgt, hgt, shift_x, shift_y)
     turtle:assignReserveBlocks(reserveBlocks)
-    turtle:printReserveBlocks()
     turtle.pos.x = 2   turtle.pos.y = -1
     luaunit.assertFalse(turtle:isReserveSpace())
     turtle.pos.x = 3   turtle.pos.y = 0
@@ -106,7 +102,6 @@ function TestWakuTurtle:testIsReserveSpace_DigMode_MirrorX()
     local name = "Dig with MIRROR X, start at " .. shift_x .. ", " .. shift_y
     local turtle = WakuTurtle:new(name, nil, BUILD_MODE.DIG, REPEAT_MODE.MIRROR, REPEAT_MODE.NO_REPEAT, len, wgt, hgt, shift_x, shift_y)
     turtle:assignReserveBlocks(reserveBlocks)
-    turtle:printReserveBlocks()
     turtle.pos.x = 2   turtle.pos.y = 0
     luaunit.assertTrue(turtle:isReserveSpace())
     turtle.pos.x = 4   turtle.pos.y = 1
@@ -128,7 +123,6 @@ function TestWakuTurtle:testIsReserveSpace_DigMode_MirrorY()
     local name = "Dig with MIRROR Y, start at " .. shift_x .. ", " .. shift_y
     local turtle = WakuTurtle:new(name, nil, BUILD_MODE.DIG, REPEAT_MODE.NO_REPEAT, REPEAT_MODE.MIRROR, len, wgt, hgt, shift_x, shift_y)
     turtle:assignReserveBlocks(reserveBlocks)
-    turtle:printReserveBlocks()
     turtle.pos.x = -1   turtle.pos.y = 4
     luaunit.assertTrue(turtle:isReserveSpace())
     turtle.pos.x = 1   turtle.pos.y = 3
@@ -148,7 +142,6 @@ function TestWakuTurtle:testIsReserveSpace_DigMode_MirrorXY()
     local name = "Fill with MIRROR X and Y, start at " .. shift_x .. ", " .. shift_y
     local turtle = WakuTurtle:new(name, nil, BUILD_MODE.FILL, REPEAT_MODE.MIRROR, REPEAT_MODE.MIRROR, len, wgt, hgt, shift_x, shift_y)
     turtle:assignReserveBlocks(reserveBlocks)
-    turtle:printReserveBlocks()
     turtle.pos.x = 3   turtle.pos.y = 3
     luaunit.assertFalse(turtle:isReserveSpace())
     turtle.pos.x = 2   turtle.pos.y = 3
