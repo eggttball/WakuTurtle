@@ -65,12 +65,7 @@ WakuTurtle = {
     direction = POS.FWD
 }
 
-local reserveBlocks = {
-    {0, 0, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-}
+local reserveBlocks = {}
 
 function WakuTurtle:getLength()
     return self.length
@@ -244,45 +239,39 @@ function WakuTurtle:isReserveSpace()
 end
 
 
+local function initReserveBlocks(rowSize, colSize)
+    for i = 1, colSize do
+        reserveBlocks[i] = {}
+        for j = 1, rowSize do
+            reserveBlocks[i][j] = 0
+        end
+    end
+end
+
+
 -- 把小烏龜的儲物箱當作藍圖，儲存需要保留方塊的位置
 function WakuTurtle:saveReserveBlocks()
     local loc = 1
+    local obj = self.turtle
     local ok, chest = self.turtle.inspectDown()
+
     if ok and string.find(chest.name, "chest") then
         if (chest.name == "ironchest:crystal_chest") then
             self._loc_max = 108
             self._chest_row_size = 12
             self._chest_col_size = 9
         end
-        for i = 1, self._chest_col_size do
-            reserveBlocks[i] = {}
-            for j = 1, self._chest_row_size do
-                reserveBlocks[i][j] = 0
-            end
-        end
 
-        chest = peripheral.wrap("bottom")
-
-        while loc <= self._loc_max do
-            if chest.getItemDetail(loc) then
-                local x = (loc - 1) % self._chest_row_size
-                local y = math.floor((self._loc_max - loc) / self._chest_row_size)
-                reserveBlocks[self._chest_col_size - y][x + 1] = 1
-            end
-            loc = loc + 1
-        end
-
-        return
+        obj = peripheral.wrap("bottom")
     end
 
-    while loc <= self._loc_max and self.turtle.select(loc) do
-        if self.turtle.getItemCount(loc) > 0 then
-            local items = self.turtle.getItemDetail()
-            if checkList(items.name, self._blocks_to_build) then
-                local x = (loc - 1) % self._chest_row_size
-                local y = math.floor((self._loc_max - loc) / self._chest_row_size)
-                reserveBlocks[self._chest_col_size - y][x + 1] = 1
-            end
+    initReserveBlocks(self._chest_row_size, self._chest_col_size)
+
+    while loc <= self._loc_max do
+        if obj.getItemDetail(loc) then
+            local x = (loc - 1) % self._chest_row_size
+            local y = math.floor((self._loc_max - loc) / self._chest_row_size)
+            reserveBlocks[self._chest_col_size - y][x + 1] = 1
         end
         loc = loc + 1
     end
