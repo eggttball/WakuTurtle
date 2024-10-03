@@ -38,12 +38,13 @@ while hgt < builder:getHeight() do
         end
 
         -- 眼前整排可以挖掘或填補，先面向原本的朝向，然後開始進行
-        builder:faceTo(facing)
         if builder._build_mode == BUILD_MODE.DIG then
+            builder:faceTo(facing)
             builder:digAuto(POS.FWD, builder:getLength() + 1)
             -- 記錄目前座標，這是確保可以回到原點的位置
             builder:saveCurrentPos()
         else
+            builder:faceTo(POS.getRevDir(facing))
             builder:placeAuto(POS.FWD, builder:getLength())
         end
 

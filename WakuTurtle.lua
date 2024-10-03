@@ -441,7 +441,6 @@ function WakuTurtle:placeAuto(pos, distance)
         distance = math.abs(distance)
     end
 
-    if pos == POS.FWD then self:turnBack() end
     local d = 0
     self:move(POS.BCK)
     while d < distance and buildingBlocksLoc > 0 do
