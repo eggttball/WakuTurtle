@@ -42,6 +42,7 @@ WakuTurtle = {
         "minecraft:sand"
     },
     _loc_torch = 0, -- 火把在儲存箱內的位置，1 ~ 16
+    _loc_max = 16,  -- 儲存箱最大位置
     chestPos = {    -- Chest Box Position
         x = 0,
         y = 0,
@@ -87,7 +88,7 @@ end
 
 function WakuTurtle:findTorch()
     local loc = 1
-    while loc <= 16 and self.turtle.select(loc) do
+    while loc <= self._loc_max and self.turtle.select(loc) do
         if self.turtle.getItemCount(loc) > 0 then
             local items = self.turtle.getItemDetail()
             if items.name == "minecraft:torch" then
@@ -244,12 +245,12 @@ end
 -- 把小烏龜的儲物箱當作藍圖，儲存需要保留方塊的位置
 function WakuTurtle:saveReserveBlocks()
     local loc = 1
-    while loc <= 16 and self.turtle.select(loc) do
+    while loc <= self._loc_max and self.turtle.select(loc) do
         if self.turtle.getItemCount(loc) > 0 then
             local items = self.turtle.getItemDetail()
             if checkList(items.name, self._blocks_to_build) then
                 local x = (loc - 1) % 4
-                local y = math.floor((16 - loc) / 4)
+                local y = math.floor((self._loc_max - loc) / 4)
                 reserveBlocks[4 - y][x + 1] = 1
             end
         end
@@ -510,7 +511,7 @@ function WakuTurtle:dropAllItems()
     end
 
     local loc = 1
-    while loc <= 16 and self.turtle.select(loc) do
+    while loc <= self._loc_max and self.turtle.select(loc) do
         if self.turtle.getItemCount(loc) > 0 then
             local items = self.turtle.getItemDetail()
             if items.name == "minecraft:torch" then
