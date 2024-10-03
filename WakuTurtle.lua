@@ -271,8 +271,9 @@ function WakuTurtle:findBuildingBlocks()
     local loc = 1
     while loc <= 16 and self.turtle.select(loc) do
         if self.turtle.getItemCount(loc) > 0 then
-            local items = self.turtle.getItemDetail()
-            if checkList(items.name, self._blocks_to_build) then return loc end
+            --local items = self.turtle.getItemDetail()
+            --if checkList(items.name, self._blocks_to_build) then return loc end
+            return loc
         end
         loc = loc + 1
     end
