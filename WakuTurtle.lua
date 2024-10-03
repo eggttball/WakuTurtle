@@ -43,6 +43,8 @@ WakuTurtle = {
     },
     _loc_torch = 0, -- 火把在儲存箱內的位置，1 ~ 16
     _loc_max = 16,  -- 儲存箱最大位置
+    _chest_row_size = 4,
+    _chest_col_size = 4,
     chestPos = {    -- Chest Box Position
         x = 0,
         y = 0,
@@ -216,19 +218,19 @@ end
 -- 確認建築藍圖，檢查前面的空間是否應該保留
 function WakuTurtle:isReserveSpace()
     local reserve = 0
-    if self._repeat_mode_x == REPEAT_MODE.NO_REPEAT and (self.pos.x < self._shift_x or self.pos.x > 3 + self._shift_x) then
+    if self._repeat_mode_x == REPEAT_MODE.NO_REPEAT and (self.pos.x < self._shift_x or self.pos.x > (self._chest_row_size - 1) + self._shift_x) then
         reserve = 0
-    elseif self._repeat_mode_y == REPEAT_MODE.NO_REPEAT and (self.pos.y < self._shift_y or self.pos.y > 3 + self._shift_y) then
+    elseif self._repeat_mode_y == REPEAT_MODE.NO_REPEAT and (self.pos.y < self._shift_y or self.pos.y > (self._chest_col_size - 1) + self._shift_y) then
         reserve = 0
     else
-        local reviseX = ((self.pos.x % 4 + 1 - self._shift_x) - 1) % 4 + 1
-        local reviseY = ((4 - self.pos.y % 4 + self._shift_y) - 1) % 4 + 1
-        if self._repeat_mode_x == REPEAT_MODE.MIRROR and (math.floor((self.pos.x - self._shift_x) / 4)) % 2 == 1 then
-            reviseX = 5 - reviseX
+        local reviseX = ((self.pos.x % self._chest_row_size + 1 - self._shift_x) - 1) % self._chest_row_size + 1
+        local reviseY = ((self._chest_col_size - self.pos.y % self._chest_col_size + self._shift_y) - 1) % self._chest_col_size + 1
+        if self._repeat_mode_x == REPEAT_MODE.MIRROR and (math.floor((self.pos.x - self._shift_x) / self._chest_row_size)) % 2 == 1 then
+            reviseX = self._chest_row_size + 1 - reviseX
         end
 
-        if self._repeat_mode_y == REPEAT_MODE.MIRROR and (math.floor((self.pos.y - self._shift_y) / 4)) % 2 == 1 then
-            reviseY = 5 - reviseY
+        if self._repeat_mode_y == REPEAT_MODE.MIRROR and (math.floor((self.pos.y - self._shift_y) / self._chest_col_size)) % 2 == 1 then
+            reviseY = self._chest_col_size + 1 - reviseY
         end
         reserve = reserveBlocks[reviseY][reviseX]
     end
@@ -249,9 +251,9 @@ function WakuTurtle:saveReserveBlocks()
         if self.turtle.getItemCount(loc) > 0 then
             local items = self.turtle.getItemDetail()
             if checkList(items.name, self._blocks_to_build) then
-                local x = (loc - 1) % 4
-                local y = math.floor((self._loc_max - loc) / 4)
-                reserveBlocks[4 - y][x + 1] = 1
+                local x = (loc - 1) % self._chest_row_size
+                local y = math.floor((self._loc_max - loc) / self._chest_row_size)
+                reserveBlocks[self._chest_col_size - y][x + 1] = 1
             end
         end
         loc = loc + 1
