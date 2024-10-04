@@ -244,6 +244,53 @@ function WakuTurtle:isReserveSpace(posX, posY)
 end
 
 
+--[[
+    取得下一個可以工作（挖掘或填補）的位置，回傳座標與朝向
+    dir: 目前的主要朝向
+    return: x, y, facing
+  ]]
+function WakuTurtle:getNextWorkingPos(dir, posX, posY)
+    posX = posX or self.pos.x
+    posY = posY or self.pos.y
+
+    -- DIR.EAST
+    local step = 1
+    local final = self:getWeight() + self._shift_x - 1
+    local facing = dir
+
+    if facing == DIR.WEST then
+        step = -1
+        final = self._shift_x
+    end
+
+    local start = posX
+    local changeFinal = function ()
+        if final == self._shift_x then
+            return self:getWeight() + self._shift_x - 1
+        else
+            return self._shift_x
+        end
+    end
+
+    for y = posY, self:getHeight() + self._shift_y - 1, 1 do
+        local x
+        for x = start, final, step do
+            if not self:isReserveSpace(x, y) then
+                print("x: " .. x .. ", y: " .. y .. ", facing: " .. facing)
+                return x, y, facing
+            end
+        end
+
+        facing = DIR.getRevDir(facing)
+        start = final
+        final = changeFinal()
+        step = step * -1
+    end
+
+    return nil, nil, nil
+end
+
+
 local function initReserveBlocks(rowSize, colSize)
     for i = 1, colSize do
         reserveBlocks[i] = {}
