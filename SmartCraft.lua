@@ -16,7 +16,6 @@ builder:printReserveBlocks()
 -- 移動到初始位置再開始作業
 builder:gotoStartPos()
 
-local hgt = 0
 local dir = DIR.EAST -- 建築的主要方向，先由左向右，整個平面完成後再從右向左，持續反覆
 local facing = builder.facing       -- 暫存小烏龜原本的朝向
 local nextActionOnDir = function () -- 依據建築的主要方向，再往前挖掘一格
@@ -24,44 +23,55 @@ local nextActionOnDir = function () -- 依據建築的主要方向，再往前�
     builder:digAuto(POS.FWD, 1)
 end
 
-while hgt < builder:getHeight() do
+local nextX, nextY, nextFacing = builder:getNextWorkingPos(dir)
+local step = 0
 
-    local wgt = 0
-    -- 持續來回挖掘或填補平面的方塊，直到寬度到達 Weight
-    while wgt < builder:getWeight() do
-        -- 確認眼前的方塊，根據建築藍圖是否應該保留
-        while builder:isReserveSpace() do
-            wgt = wgt + 1
-            if  wgt == builder:getWeight() then goto continue end
-            -- 眼前的方塊必須保留，所以跳過，繼續往前一格
-            nextActionOnDir()
-        end
-
-        -- 眼前整排可以挖掘或填補，先面向原本的朝向，然後開始進行
-        if builder._build_mode == BUILD_MODE.DIG then
-            builder:faceTo(facing)
-            builder:digAuto(POS.FWD, builder:getLength() + 1)
-            -- 記錄目前座標，這是確保可以回到原點的位置
-            builder:saveCurrentPos()
-        else
-            builder:faceTo(POS.getRevDir(facing))
-            builder:placeAuto(POS.FWD, builder:getLength())
-        end
-
-        -- 進行一排後，下次行動方向要反轉
-        facing = DIR.getRevDir(facing)
-        wgt = wgt + 1
-        if wgt == builder:getWeight() then break end
-        nextActionOnDir()
+-- 每次都判斷下一個工作位置，如果找不到，表示整個建築已經完成，可以準備收工回家了
+while nextX and nextY do
+    if nextX > builder.pos.x or nextFacing == DIR.EAST then
+        step = 1
+        dir = DIR.EAST
+    elseif nextX < builder.pos.x or nextFacing == DIR.WEST then
+        step = -1
+        dir = DIR.WEST
     end
 
-    ::continue::
-
-    -- 往上挖掘一格，準備建築下一個平面
-    hgt = hgt + 1
-    if hgt < builder:getHeight() then
+    for i = builder.pos.x, nextX - step, step do
+        nextActionOnDir()
+    end
+    for i = builder.pos.y, nextY - 1, 1 do
         builder:dig(POS.UP)
-        dir = DIR.getRevDir(dir)
+    end
+
+    -- 眼前整排可以挖掘或填補，先面向原本的朝向，然後開始進行
+    if builder._build_mode == BUILD_MODE.DIG then
+        builder:faceTo(facing)
+        builder:digAuto(POS.FWD, builder:getLength() + 1)
+        -- 記錄目前座標，這是確保可以回到原點的位置
+        builder:saveCurrentPos()
+    else
+        builder:faceTo(POS.getRevDir(facing))
+        builder:placeAuto(POS.FWD, builder:getLength())
+    end
+
+    -- 進行一排後，下次行動方向要反轉
+    facing = DIR.getRevDir(facing)
+    if builder.pos.x == xShift or builder.pos.x == xShift + weight - 1 then
+        nextX, nextY, nextFacing = builder:getNextWorkingPos(DIR.getRevDir(dir), builder.pos.x, builder.pos.y + 1)
+    else
+        nextX, nextY, nextFacing = builder:getNextWorkingPos(dir, builder.pos.x + step, builder.pos.y)
+    end
+
+    if nextX and nextY then
+        if nextY == builder.pos.y then
+            nextActionOnDir()
+        elseif nextX > builder.pos.x then
+            dir = DIR.EAST
+            nextActionOnDir()
+        elseif nextX < builder.pos.x then
+            dir = DIR.WEST
+            nextActionOnDir()
+        end
     end
 end
 
