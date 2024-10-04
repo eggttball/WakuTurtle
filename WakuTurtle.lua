@@ -211,20 +211,25 @@ function WakuTurtle:allowedToDig(blockName)
 end
 
 -- 確認建築藍圖，檢查前面的空間是否應該保留
-function WakuTurtle:isReserveSpace()
+-- 挖掘模式時，設計圖中有方塊 (1) 的地方必須保留（不能挖）
+-- 填補模式時，設計圖中沒有方塊 (0) 的地方必須保留（不能填）
+function WakuTurtle:isReserveSpace(posX, posY)
     local reserve = 0
-    if self._repeat_mode_x == REPEAT_MODE.NO_REPEAT and (self.pos.x < self._shift_x or self.pos.x > (self._chest_row_size - 1) + self._shift_x) then
+    posX = posX or self.pos.x
+    posY = posY or self.pos.y
+
+    if self._repeat_mode_x == REPEAT_MODE.NO_REPEAT and (posX < self._shift_x or posX > (self._chest_row_size - 1) + self._shift_x) then
         reserve = 0
-    elseif self._repeat_mode_y == REPEAT_MODE.NO_REPEAT and (self.pos.y < self._shift_y or self.pos.y > (self._chest_col_size - 1) + self._shift_y) then
+    elseif self._repeat_mode_y == REPEAT_MODE.NO_REPEAT and (posY < self._shift_y or posY > (self._chest_col_size - 1) + self._shift_y) then
         reserve = 0
     else
-        local reviseX = ((self.pos.x % self._chest_row_size + 1 - self._shift_x) - 1) % self._chest_row_size + 1
-        local reviseY = ((self._chest_col_size - self.pos.y % self._chest_col_size + self._shift_y) - 1) % self._chest_col_size + 1
-        if self._repeat_mode_x == REPEAT_MODE.MIRROR and (math.floor((self.pos.x - self._shift_x) / self._chest_row_size)) % 2 == 1 then
+        local reviseX = ((posX % self._chest_row_size + 1 - self._shift_x) - 1) % self._chest_row_size + 1
+        local reviseY = ((self._chest_col_size - posY % self._chest_col_size + self._shift_y) - 1) % self._chest_col_size + 1
+        if self._repeat_mode_x == REPEAT_MODE.MIRROR and (math.floor((posX - self._shift_x) / self._chest_row_size)) % 2 == 1 then
             reviseX = self._chest_row_size + 1 - reviseX
         end
 
-        if self._repeat_mode_y == REPEAT_MODE.MIRROR and (math.floor((self.pos.y - self._shift_y) / self._chest_col_size)) % 2 == 1 then
+        if self._repeat_mode_y == REPEAT_MODE.MIRROR and (math.floor((posY - self._shift_y) / self._chest_col_size)) % 2 == 1 then
             reviseY = self._chest_col_size + 1 - reviseY
         end
         reserve = reserveBlocks[reviseY][reviseX]
