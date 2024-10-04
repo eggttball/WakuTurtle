@@ -171,4 +171,124 @@ function TestWakuTurtle:testIsReserveSpace_DigMode_MirrorXY()
 end
 
 
+function TestWakuTurtle:testNextWorkingPos_DigMode_RepeatXY()
+    local len, wgt, hgt = 3, 10, 11
+    local shift_x, shift_y = -2, -1
+    local name = "Dig with REPEAT X Y, start at " .. shift_x .. ", " .. shift_y
+    local turtle = WakuTurtle:new(name, nil, BUILD_MODE.DIG, REPEAT_MODE.REPEAT, REPEAT_MODE.REPEAT, len, wgt, hgt, shift_x, shift_y)
+    turtle:assignReserveBlocks(reserveBlocks)
+
+    turtle.pos.x = -2   turtle.pos.y = -1
+    local nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, -1)
+    luaunit.assertEquals(nextY, -1)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = -1   turtle.pos.y = -1
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, -1)
+    luaunit.assertEquals(nextY, -1)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = 1   turtle.pos.y = -1
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, 3)
+    luaunit.assertEquals(nextY, -1)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = 7   turtle.pos.y = -1
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, 7)
+    luaunit.assertEquals(nextY, -1)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = 7   turtle.pos.y = 1
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, 5)
+    luaunit.assertEquals(nextY, 2)
+    luaunit.assertEquals(nextFacing, DIR.WEST)
+
+    turtle.pos.x = 6   turtle.pos.y = 2
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, 7)
+    luaunit.assertEquals(nextY, 3)
+    luaunit.assertEquals(nextFacing, DIR.WEST)
+
+    turtle.pos.x = -2   turtle.pos.y = 2
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.WEST)
+    luaunit.assertEquals(nextX, -1)
+    luaunit.assertEquals(nextY, 3)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = 7   turtle.pos.y = 9
+    local nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, nil)
+    luaunit.assertEquals(nextY, nil)
+    luaunit.assertEquals(nextFacing, nil)
+end
+
+
+function TestWakuTurtle:testNextWorkingPos_FillMode_RepeatXY()
+    local len, wgt, hgt = 3, 10, 10
+    local shift_x, shift_y = -2, -1
+    local name = "Fill with REPEAT X Y, start at " .. shift_x .. ", " .. shift_y
+    local turtle = WakuTurtle:new(name, nil, BUILD_MODE.FILL, REPEAT_MODE.REPEAT, REPEAT_MODE.REPEAT, len, wgt, hgt, shift_x, shift_y)
+    turtle:assignReserveBlocks(reserveBlocks)
+
+    turtle.pos.x = -2   turtle.pos.y = -1
+    local nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, -2)
+    luaunit.assertEquals(nextY, -1)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = -1   turtle.pos.y = -1
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, 1)
+    luaunit.assertEquals(nextY, -1)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = 1   turtle.pos.y = -1
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, 1)
+    luaunit.assertEquals(nextY, -1)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = 7   turtle.pos.y = -1
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, 5)
+    luaunit.assertEquals(nextY, 0)
+    luaunit.assertEquals(nextFacing, DIR.WEST)
+
+    turtle.pos.x = 7   turtle.pos.y = 1
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, 7)
+    luaunit.assertEquals(nextY, 1)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = 6   turtle.pos.y = 2
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, 6)
+    luaunit.assertEquals(nextY, 2)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = -2   turtle.pos.y = 2
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.WEST)
+    luaunit.assertEquals(nextX, -2)
+    luaunit.assertEquals(nextY, 2)
+    luaunit.assertEquals(nextFacing, DIR.WEST)
+
+    turtle.pos.x = 0   turtle.pos.y = 4
+    nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.WEST)
+    luaunit.assertEquals(nextX, -1)
+    luaunit.assertEquals(nextY, 5)
+    luaunit.assertEquals(nextFacing, DIR.EAST)
+
+    turtle.pos.x = 7   turtle.pos.y = 8
+    local nextX, nextY, nextFacing = turtle:getNextWorkingPos(DIR.EAST)
+    luaunit.assertEquals(nextX, nil)
+    luaunit.assertEquals(nextY, nil)
+    luaunit.assertEquals(nextFacing, nil)
+end
+
+
 os.exit(luaunit.LuaUnit.run())
