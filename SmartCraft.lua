@@ -24,14 +24,14 @@ local nextActionOnDir = function () -- 依據建築的主要方向，再往前�
 end
 
 local nextX, nextY, nextFacing = builder:getNextWorkingPos(dir)
-local step = 0
+local step = 1
 
 -- 每次都判斷下一個工作位置，如果找不到，表示整個建築已經完成，可以準備收工回家了
 while nextX and nextY do
-    if nextX > builder.pos.x or nextFacing == DIR.EAST then
+    if nextX > builder.pos.x then
         step = 1
         dir = DIR.EAST
-    elseif nextX < builder.pos.x or nextFacing == DIR.WEST then
+    elseif nextX < builder.pos.x then
         step = -1
         dir = DIR.WEST
     end
@@ -42,6 +42,8 @@ while nextX and nextY do
     for i = builder.pos.y, nextY - 1, 1 do
         builder:dig(POS.UP)
     end
+    dir = nextFacing
+    step = (dir == DIR.EAST) and 1 or -1
 
     -- 眼前整排可以挖掘或填補，先面向原本的朝向，然後開始進行
     if builder._build_mode == BUILD_MODE.DIG then
