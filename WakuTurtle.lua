@@ -10,7 +10,7 @@ WakuTurtle = {
     _start_z = 0,
     _shift_x = 0,
     _shift_y = 0,
-    _blocks_to_dig = {  -- 限制可以挖掘的地形，避免不小心程式寫錯，挖到失控，把家給鏟了
+    _blocks_to_dig = {  -- 限制可以挖掘的地形，避免不小心程式寫錯，挖到失控，把家給鏟了（為避免複雜，暫不使用這限制）
         "minecraft:stone",      -- 石頭
         "minecraft:cobblestone",-- 鵝卵石
         "minecraft:diorite",    -- 閃長岩
@@ -207,7 +207,8 @@ end
 
 -- 檢查方塊是否允許挖掘
 function WakuTurtle:allowedToDig(blockName)
-    return checkList(blockName, self._blocks_to_dig)
+    return true
+    -- return checkList(blockName, self._blocks_to_dig)
 end
 
 -- 確認建築藍圖，檢查前面的空間是否應該保留
