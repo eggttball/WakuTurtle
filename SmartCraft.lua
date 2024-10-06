@@ -28,6 +28,7 @@ local step = 1
 
 -- 每次都判斷下一個工作位置，如果找不到，表示整個建築已經完成，可以準備收工回家了
 while nextX and nextY do
+    -- 移動到下一個工作地點
     if nextX > builder.pos.x then
         step = 1
         dir = DIR.EAST
@@ -35,13 +36,14 @@ while nextX and nextY do
         step = -1
         dir = DIR.WEST
     end
-
     for i = builder.pos.x, nextX - step, step do
         nextActionOnDir()
     end
     for i = builder.pos.y, nextY - 1, 1 do
         builder:dig(POS.UP)
     end
+
+    -- 開始下一輪的工作，先正確設定方向
     dir = nextFacing
     step = (dir == DIR.EAST) and 1 or -1
 
@@ -59,21 +61,11 @@ while nextX and nextY do
     -- 進行一排後，下次行動方向要反轉
     facing = DIR.getRevDir(facing)
     if (builder.pos.x == xShift and dir == DIR.WEST) or (builder.pos.x == xShift + weight - 1 and dir == DIR.EAST) then
+        -- 如果已經到達最左或最右邊，就要往上一排移動
         nextX, nextY, nextFacing = builder:getNextWorkingPos(DIR.getRevDir(dir), builder.pos.x, builder.pos.y + 1)
     else
+        -- 在目前的方向，往下一格開始探測工作地點
         nextX, nextY, nextFacing = builder:getNextWorkingPos(dir, builder.pos.x + step, builder.pos.y)
-    end
-
-    if nextX and nextY then
-        if nextY == builder.pos.y then
-            nextActionOnDir()
-        elseif nextX > builder.pos.x then
-            dir = DIR.EAST
-            nextActionOnDir()
-        elseif nextX < builder.pos.x then
-            dir = DIR.WEST
-            nextActionOnDir()
-        end
     end
 end
 
