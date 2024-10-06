@@ -1,4 +1,5 @@
 require "Base"
+require "Items/Chest"
 
 WakuTurtle = {
     _time_format = "%Y-%m-%d %H:%M:%S",
@@ -309,13 +310,11 @@ function WakuTurtle:saveReserveBlocks()
     local ok, chest = self.turtle.inspectDown()
 
     if ok and string.find(chest.name, "chest") then
-        if (chest.name == "ironchest:crystal_chest") then
-            self._loc_max = 108
-            self._chest_row_size = 12
-            self._chest_col_size = 9
-        end
-
+        chest = Chest:getInstance(chest.name)
         obj = peripheral.wrap("bottom")
+        self._loc_max = obj.size()
+        self._chest_row_size = chest:getRowSize()
+        self._chest_col_size = obj.size() / chest:getRowSize()
     end
 
     initReserveBlocks(self._chest_row_size, self._chest_col_size)
