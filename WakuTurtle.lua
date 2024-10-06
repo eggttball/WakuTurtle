@@ -10,7 +10,7 @@ WakuTurtle = {
     _start_z = 0,
     _shift_x = 0,
     _shift_y = 0,
-    _blocks_to_dig = {  -- 限制可以挖掘的地形，避免不小心程式寫錯，挖到失控，把家給鏟了
+    _blocks_to_dig = {  -- 限制可以挖掘的地形，避免不小心程式寫錯，挖到失控，把家給鏟了（為避免複雜，暫不使用這限制）
         "minecraft:stone",      -- 石頭
         "minecraft:cobblestone",-- 鵝卵石
         "minecraft:diorite",    -- 閃長岩
@@ -207,24 +207,30 @@ end
 
 -- 檢查方塊是否允許挖掘
 function WakuTurtle:allowedToDig(blockName)
-    return checkList(blockName, self._blocks_to_dig)
+    return true
+    -- return checkList(blockName, self._blocks_to_dig)
 end
 
 -- 確認建築藍圖，檢查前面的空間是否應該保留
-function WakuTurtle:isReserveSpace()
+-- 挖掘模式時，設計圖中有方塊 (1) 的地方必須保留（不能挖）
+-- 填補模式時，設計圖中沒有方塊 (0) 的地方必須保留（不能填）
+function WakuTurtle:isReserveSpace(posX, posY)
     local reserve = 0
-    if self._repeat_mode_x == REPEAT_MODE.NO_REPEAT and (self.pos.x < self._shift_x or self.pos.x > (self._chest_row_size - 1) + self._shift_x) then
+    posX = posX or self.pos.x
+    posY = posY or self.pos.y
+
+    if self._repeat_mode_x == REPEAT_MODE.NO_REPEAT and (posX < self._shift_x or posX > (self._chest_row_size - 1) + self._shift_x) then
         reserve = 0
-    elseif self._repeat_mode_y == REPEAT_MODE.NO_REPEAT and (self.pos.y < self._shift_y or self.pos.y > (self._chest_col_size - 1) + self._shift_y) then
+    elseif self._repeat_mode_y == REPEAT_MODE.NO_REPEAT and (posY < self._shift_y or posY > (self._chest_col_size - 1) + self._shift_y) then
         reserve = 0
     else
-        local reviseX = ((self.pos.x % self._chest_row_size + 1 - self._shift_x) - 1) % self._chest_row_size + 1
-        local reviseY = ((self._chest_col_size - self.pos.y % self._chest_col_size + self._shift_y) - 1) % self._chest_col_size + 1
-        if self._repeat_mode_x == REPEAT_MODE.MIRROR and (math.floor((self.pos.x - self._shift_x) / self._chest_row_size)) % 2 == 1 then
+        local reviseX = ((posX % self._chest_row_size + 1 - self._shift_x) - 1) % self._chest_row_size + 1
+        local reviseY = ((self._chest_col_size - posY % self._chest_col_size + self._shift_y) - 1) % self._chest_col_size + 1
+        if self._repeat_mode_x == REPEAT_MODE.MIRROR and (math.floor((posX - self._shift_x) / self._chest_row_size)) % 2 == 1 then
             reviseX = self._chest_row_size + 1 - reviseX
         end
 
-        if self._repeat_mode_y == REPEAT_MODE.MIRROR and (math.floor((self.pos.y - self._shift_y) / self._chest_col_size)) % 2 == 1 then
+        if self._repeat_mode_y == REPEAT_MODE.MIRROR and (math.floor((posY - self._shift_y) / self._chest_col_size)) % 2 == 1 then
             reviseY = self._chest_col_size + 1 - reviseY
         end
         reserve = reserveBlocks[reviseY][reviseX]
@@ -236,6 +242,53 @@ function WakuTurtle:isReserveSpace()
     else
         return false
     end
+end
+
+
+--[[
+    取得下一個可以工作（挖掘或填補）的位置，回傳座標與朝向
+    dir: 目前的主要朝向
+    return: x, y, facing
+  ]]
+function WakuTurtle:getNextWorkingPos(dir, posX, posY)
+    posX = posX or self.pos.x
+    posY = posY or self.pos.y
+
+    -- DIR.EAST
+    local step = 1
+    local final = self:getWeight() + self._shift_x - 1
+    local facing = dir
+
+    if facing == DIR.WEST then
+        step = -1
+        final = self._shift_x
+    end
+
+    local start = posX
+    local changeFinal = function ()
+        if final == self._shift_x then
+            return self:getWeight() + self._shift_x - 1
+        else
+            return self._shift_x
+        end
+    end
+
+    for y = posY, self:getHeight() + self._shift_y - 1, 1 do
+        local x
+        for x = start, final, step do
+            if not self:isReserveSpace(x, y) then
+                print("x: " .. x .. ", y: " .. y .. ", facing: " .. facing)
+                return x, y, facing
+            end
+        end
+
+        facing = DIR.getRevDir(facing)
+        start = final
+        final = changeFinal()
+        step = step * -1
+    end
+
+    return nil, nil, nil
 end
 
 
