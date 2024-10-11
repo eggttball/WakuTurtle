@@ -1,14 +1,14 @@
 require "WakuTurtle"
 
 local buildMode     = tonumber(arg[1])
-local repeatModeX   = tonumber(arg[2])
-local repeatModeY   = tonumber(arg[3])
-local length = tonumber(arg[4])
-local weight = tonumber(arg[5])
-local height = tonumber(arg[6])
-local xShift = tonumber(arg[7]) or 0    -- 右移格數，調整挖掘的起始位置。挖掘很大的空間時，方便同時放出多個小烏龜一起作業，避免互相干擾
-local yShift = tonumber(arg[8]) or 0    -- 垂直移動格數，調整挖掘的上下起始位置。理由同上
-local zShift = tonumber(arg[9]) or 0    -- 前後移動格數，調整挖掘的前後起始位置。理由同上
+local length        = tonumber(arg[2])
+local weight        = tonumber(arg[3])
+local height        = tonumber(arg[4])
+local repeatModeX   = tonumber(arg[5])
+local repeatModeY   = tonumber(arg[6])
+local xShift        = tonumber(arg[7]) or 0    -- 右移格數，調整挖掘的起始位置。挖掘很大的空間時，方便同時放出多個小烏龜一起作業，避免互相干擾
+local yShift        = tonumber(arg[8]) or 0    -- 垂直移動格數，調整挖掘的上下起始位置。理由同上
+local zShift        = tonumber(arg[9]) or 0    -- 前後移動格數，調整挖掘的前後起始位置。理由同上
 
 
 local builder = WakuTurtle:new("Ant", turtle, buildMode, repeatModeX, repeatModeY, length, weight, height, xShift, yShift, zShift)
