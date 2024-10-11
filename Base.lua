@@ -1,6 +1,6 @@
 -- 建築模式
 BUILD_MODE = {
-    DIG = 0,
+    DIG = -1,
     FILL = 1
 }
 

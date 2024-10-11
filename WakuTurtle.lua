@@ -3,7 +3,7 @@ require "Items/Chest"
 
 WakuTurtle = {
     _time_format = "%Y-%m-%d %H:%M:%S",
-    _build_mode = BUILD_MODE.DIG,
+    _build_mode = BUILD_MODE.FILL,
     _repeat_mode_x = REPEAT_MODE.NO_REPEAT,
     _repeat_mode_y = REPEAT_MODE.NO_REPEAT,
     _start_x = 0,   -- Start Point
