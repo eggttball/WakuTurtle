@@ -11,6 +11,7 @@ WakuTurtle = {
     _start_z = 0,
     _shift_x = 0,
     _shift_y = 0,
+    _shift_z = 0,
     _blocks_to_dig = {  -- 限制可以挖掘的地形，避免不小心程式寫錯，挖到失控，把家給鏟了（為避免複雜，暫不使用這限制）
         "minecraft:stone",      -- 石頭
         "minecraft:cobblestone",-- 鵝卵石
@@ -98,7 +99,7 @@ function WakuTurtle:findTorch()
     end
 end
 
-function WakuTurtle:new(name, turtle, buildMode, repeatModeX, repeatModeY, length, weight, height, xShift, yShift)
+function WakuTurtle:new(name, turtle, buildMode, repeatModeX, repeatModeY, length, weight, height, xShift, yShift, zShift)
     local obj = {}
     setmetatable(obj, self)
     self.__index = self
@@ -113,6 +114,7 @@ function WakuTurtle:new(name, turtle, buildMode, repeatModeX, repeatModeY, lengt
     obj.height = (height and height >= 1 and height) or 1
     obj._shift_x = xShift
     obj._shift_y = yShift
+    obj._shift_z = zShift
 
     -- Show initial status
     obj.createTime = os.date(self._time_format)
@@ -136,6 +138,9 @@ function WakuTurtle:gotoStartPos()
 
     -- 根據 _shift_y 數值，上下調整挖掘的起始位置
     self:digAuto(POS.UP, self._shift_y)
+
+    -- 根據 _shift_z 數值，前後調整挖掘的起始位置
+    self:digAuto(POS.FWD, self._shift_z)
 end
 
 
