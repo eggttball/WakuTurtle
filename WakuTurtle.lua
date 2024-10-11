@@ -110,8 +110,8 @@ function WakuTurtle:new(name, turtle, buildMode, repeatModeX, repeatModeY, lengt
     obj._repeat_mode_x = repeatModeX or obj._repeat_mode_x
     obj._repeat_mode_y = repeatModeY or obj._repeat_mode_y
     obj.length = (length and length >= 1 and length) or 1
-    obj.weight = (weight and weight >= 1 and weight) or 1
-    obj.height = (height and height >= 1 and height) or 1
+    obj.weight = (weight and weight >= 1 and weight) or self._chest_row_size
+    obj.height = (height and height >= 1 and height) or self._chest_col_size
     obj._shift_x = xShift
     obj._shift_y = yShift
     obj._shift_z = zShift
@@ -320,6 +320,8 @@ function WakuTurtle:saveReserveBlocks()
         self._loc_max = obj.size()
         self._chest_row_size = chest:getRowSize()
         self._chest_col_size = obj.size() / chest:getRowSize()
+        self.weight = (self.weight > 1 and self.weight) or self._chest_row_size
+        self.height = (self.height > 1 and self.height) or self._chest_col_size
     end
 
     initReserveBlocks(self._chest_row_size, self._chest_col_size)
