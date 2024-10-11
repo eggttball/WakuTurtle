@@ -47,6 +47,9 @@ WakuTurtle = {
     _loc_max = 16,  -- 儲存箱最大位置
     _chest_row_size = 4,
     _chest_col_size = 4,
+    length = 1,     -- Default Size
+    weight = 4,
+    height = 4,
     chestPos = {    -- Chest Box Position
         x = 0,
         y = 0,
@@ -109,9 +112,9 @@ function WakuTurtle:new(name, turtle, buildMode, repeatModeX, repeatModeY, lengt
     obj._build_mode = buildMode or obj._build_mode
     obj._repeat_mode_x = repeatModeX or obj._repeat_mode_x
     obj._repeat_mode_y = repeatModeY or obj._repeat_mode_y
-    obj.length = (length and length >= 1 and length) or 1
-    obj.weight = (weight and weight >= 1 and weight) or self._chest_row_size
-    obj.height = (height and height >= 1 and height) or self._chest_col_size
+    obj.length = (length and length >= 1 and length) or obj.length
+    obj.weight = (weight and weight >= 1 and weight) or obj.weight
+    obj.height = (height and height >= 1 and height) or obj.height
     obj._shift_x = xShift
     obj._shift_y = yShift
     obj._shift_z = zShift

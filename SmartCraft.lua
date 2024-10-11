@@ -60,7 +60,7 @@ while nextX and nextY do
 
     -- 進行一排後，下次行動方向要反轉
     facing = DIR.getRevDir(facing)
-    if (builder.pos.x == xShift and dir == DIR.WEST) or (builder.pos.x == xShift + weight - 1 and dir == DIR.EAST) then
+    if (builder.pos.x == xShift and dir == DIR.WEST) or (builder.pos.x == xShift + builder.weight - 1 and dir == DIR.EAST) then
         -- 如果已經到達最左或最右邊，就要往上一排移動
         nextX, nextY, nextFacing = builder:getNextWorkingPos(DIR.getRevDir(dir), builder.pos.x, builder.pos.y + 1)
     else
