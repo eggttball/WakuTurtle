@@ -224,14 +224,14 @@ end
 -- 挖掘模式時，設計圖中有方塊 (1) 的地方必須保留（不能挖）
 -- 填補模式時，設計圖中沒有方塊 (0) 的地方必須保留（不能填）
 function WakuTurtle:isReserveSpace(posX, posY)
-    local reserve = 0
+    local blockName = 0
     posX = posX or self.pos.x
     posY = posY or self.pos.y
 
     if self._repeat_mode_x == REPEAT_MODE.NO_REPEAT and (posX < self._shift_x or posX > (self._chest_row_size - 1) + self._shift_x) then
-        reserve = 0
+        blockName = 0
     elseif self._repeat_mode_y == REPEAT_MODE.NO_REPEAT and (posY < self._shift_y or posY > (self._chest_col_size - 1) + self._shift_y) then
-        reserve = 0
+        blockName = 0
     else
         local reviseX = ((posX % self._chest_row_size + 1 - self._shift_x) - 1) % self._chest_row_size + 1
         local reviseY = ((self._chest_col_size - posY % self._chest_col_size + self._shift_y) - 1) % self._chest_col_size + 1
@@ -242,14 +242,14 @@ function WakuTurtle:isReserveSpace(posX, posY)
         if self._repeat_mode_y == REPEAT_MODE.MIRROR and (math.floor((posY - self._shift_y) / self._chest_col_size)) % 2 == 1 then
             reviseY = self._chest_col_size + 1 - reviseY
         end
-        reserve = reserveBlocks[reviseY][reviseX]
+        blockName = reserveBlocks[reviseY][reviseX]
     end
 
-    if (self._build_mode == BUILD_MODE.DIG and reserve == 1) or
-       (self._build_mode == BUILD_MODE.FILL and reserve == 0) then
-        return true
+    if (self._build_mode == BUILD_MODE.DIG and blockName ~= 0) or
+       (self._build_mode == BUILD_MODE.FILL and blockName == 0) then
+        return true, nil
     else
-        return false
+        return false, blockName
     end
 end
 
@@ -330,10 +330,11 @@ function WakuTurtle:saveReserveBlocks()
     initReserveBlocks(self._chest_row_size, self._chest_col_size)
 
     while loc <= self._loc_max do
-        if obj.getItemDetail(loc) then
+        local item = obj.getItemDetail(loc)
+        if item then
             local x = (loc - 1) % self._chest_row_size
             local y = math.floor((self._loc_max - loc) / self._chest_row_size)
-            reserveBlocks[self._chest_col_size - y][x + 1] = 1
+            reserveBlocks[self._chest_col_size - y][x + 1] = item.name
         end
         loc = loc + 1
     end
@@ -346,10 +347,11 @@ end
 
 
 -- 從小烏龜的儲物箱中尋找建築用的方塊
-function WakuTurtle:findBuildingBlocks()
+function WakuTurtle:findBuildingBlocks(blockName)
     local loc = 1
     while loc <= 16 and self.turtle.select(loc) do
-        if self.turtle.getItemCount(loc) > 0 then
+        local item = self.turtle.getItemDetail(loc)
+        if item and blockName and item.name == blockName then
             --local items = self.turtle.getItemDetail()
             --if checkList(items.name, self._blocks_to_build) then return loc end
             return loc
@@ -513,7 +515,9 @@ end
 
 function WakuTurtle:placeAuto(pos, distance)
     if distance == 0 then return false end
-    local buildingBlocksLoc = self:findBuildingBlocks()
+
+    local _, blockName = self:isReserveSpace(self.pos.x, self.pos.y)
+    local buildingBlocksLoc = self:findBuildingBlocks(blockName)
     if buildingBlocksLoc == 0 then
         print("No building blocks found")
         return false
@@ -528,6 +532,7 @@ function WakuTurtle:placeAuto(pos, distance)
     self:move(POS.BCK)
     while d < distance and buildingBlocksLoc > 0 do
         self:move(POS.BCK)
+        self.turtle.select(buildingBlocksLoc)
         self.turtle.place()
         buildingBlocksLoc = self:findBuildingBlocks()
         d = d + 1
