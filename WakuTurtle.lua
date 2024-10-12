@@ -43,6 +43,7 @@ WakuTurtle = {
         "minecraft:gravel",
         "minecraft:sand"
     },
+    _blocks_locations = {},     -- 記住儲存箱中每個建築方塊的位置，加快建築的速度
     _loc_torch = 0, -- 火把在儲存箱內的位置，1 ~ 16
     _loc_max = 16,  -- 儲存箱最大位置
     _chest_row_size = 4,
@@ -348,12 +349,16 @@ end
 
 -- 從小烏龜的儲物箱中尋找建築用的方塊
 function WakuTurtle:findBuildingBlocks(blockName)
-    local loc = 1
+    local loc = self._blocks_locations[blockName]
+    if loc and self.turtle.getItemDetail(loc) then return loc end
+
+    loc = 1
     while loc <= 16 and self.turtle.select(loc) do
         local item = self.turtle.getItemDetail(loc)
         if item and blockName and item.name == blockName then
             --local items = self.turtle.getItemDetail()
             --if checkList(items.name, self._blocks_to_build) then return loc end
+            self._blocks_locations[blockName] = loc
             return loc
         end
         loc = loc + 1
