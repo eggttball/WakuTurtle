@@ -521,27 +521,25 @@ end
 function WakuTurtle:placeAuto(pos, distance)
     if distance == 0 then return false end
 
-    local _, blockName = self:isReserveSpace(self.pos.x, self.pos.y)
-    local buildingBlocksLoc = self:findBuildingBlocks(blockName)
-    if buildingBlocksLoc == 0 then
-        print("No building blocks found")
-        return false
-    end
-
     if distance < 0 then
         pos = POS.getRevDir(pos)
         distance = math.abs(distance)
     end
 
     local d = 0
+    local _, blockName = self:isReserveSpace(self.pos.x, self.pos.y)
     self:move(POS.BCK)
-    while d < distance and buildingBlocksLoc > 0 do
+    repeat
+        local buildingBlocksLoc = self:findBuildingBlocks(blockName)
+        if buildingBlocksLoc == 0 then
+            print("No enough building blocks: " .. blockName)
+            return false
+        end
         self:move(POS.BCK)
         self.turtle.select(buildingBlocksLoc)
         self.turtle.place()
-        buildingBlocksLoc = self:findBuildingBlocks(blockName)
         d = d + 1
-    end
+    until d == distance
 end
 
 
