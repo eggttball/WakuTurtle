@@ -531,13 +531,13 @@ function WakuTurtle:placeAuto(pos, distance)
     self:move(POS.BCK)
     repeat
         local buildingBlocksLoc = self:findBuildingBlocks(blockName)
+        self:move(POS.BCK)
         if buildingBlocksLoc == 0 then
             print("No enough building blocks: " .. blockName)
-            return false
+        else
+            self.turtle.select(buildingBlocksLoc)
+            self.turtle.place()
         end
-        self:move(POS.BCK)
-        self.turtle.select(buildingBlocksLoc)
-        self.turtle.place()
         d = d + 1
     until d == distance
 end
