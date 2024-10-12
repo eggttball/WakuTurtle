@@ -539,7 +539,7 @@ function WakuTurtle:placeAuto(pos, distance)
         self:move(POS.BCK)
         self.turtle.select(buildingBlocksLoc)
         self.turtle.place()
-        buildingBlocksLoc = self:findBuildingBlocks()
+        buildingBlocksLoc = self:findBuildingBlocks(blockName)
         d = d + 1
     end
 end
